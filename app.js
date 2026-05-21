@@ -19,22 +19,34 @@ supabase.createClient(
 // ======================
 
 const authForm =
-document.getElementById("auth-form");
-
-const authStatus =
-document.getElementById("auth-status");
+document.getElementById(
+  "auth-form"
+);
 
 const authScreen =
-document.getElementById("auth-screen");
+document.getElementById(
+  "auth-screen"
+);
 
 const app =
-document.getElementById("app");
+document.getElementById(
+  "app"
+);
+
+const authStatus =
+document.getElementById(
+  "auth-status"
+);
 
 const bookingForm =
-document.getElementById("booking-form");
+document.getElementById(
+  "booking-form"
+);
 
 const bookingStatus =
-document.getElementById("booking-status");
+document.getElementById(
+  "booking-status"
+);
 
 const appointmentsContainer =
 document.getElementById(
@@ -58,7 +70,7 @@ document.getElementById(
 let currentUser = null;
 
 // ======================
-// SESION
+// CHECK SESSION
 // ======================
 
 checkSession();
@@ -82,7 +94,7 @@ async function checkSession(){
 }
 
 // ======================
-// LOGIN / REGISTER
+// LOGIN
 // ======================
 
 authForm.addEventListener(
@@ -105,8 +117,10 @@ async(e)=>{
 
   let result =
   await client.auth.signInWithPassword({
+
     email,
     password
+
   });
 
   // REGISTER
@@ -115,8 +129,10 @@ async(e)=>{
 
     result =
     await client.auth.signUp({
+
       email,
       password
+
     });
 
   }
@@ -132,9 +148,6 @@ async(e)=>{
 
   currentUser =
   result.data.user;
-
-  authStatus.innerHTML =
-  "✅ Bienvenido";
 
   openApp();
 
@@ -200,7 +213,7 @@ function checkAdmin(){
 }
 
 // ======================
-// RESERVAR
+// BOOKING
 // ======================
 
 bookingForm.addEventListener(
@@ -209,15 +222,6 @@ async(e)=>{
 
   e.preventDefault();
 
-  if(!currentUser){
-
-    bookingStatus.innerHTML =
-    "Debes iniciar sesión";
-
-    return;
-
-  }
-
   const metodoPago =
   document.getElementById(
     "metodo-pago"
@@ -225,7 +229,7 @@ async(e)=>{
 
   const codigo =
   prompt(
-    `Ingrese código de confirmación de ${metodoPago}`
+    `Ingrese código de ${metodoPago}`
   );
 
   if(!codigo){
@@ -283,7 +287,10 @@ async(e)=>{
 
   // INSERTAR
 
-  const payload = {
+  const { error } =
+  await client
+  .from("citas")
+  .insert([{
 
     user_id:
     currentUser.id,
@@ -316,12 +323,7 @@ async(e)=>{
     estado:
     "Procesando"
 
-  };
-
-  const { error } =
-  await client
-  .from("citas")
-  .insert([payload]);
+  }]);
 
   if(error){
 
@@ -341,17 +343,7 @@ async(e)=>{
 
   loadMyAppointments();
 
-  if(
-    currentUser.email ===
-    "yeraariel0@gmail.com"
-  ){
-
-    loadAllAppointments();
-
-  }
-
 }
-);
 
 // ======================
 // MIS CITAS
@@ -359,14 +351,14 @@ async(e)=>{
 
 async function loadMyAppointments(){
 
-  if(!currentUser) return;
-
   const { data } =
   await client
   .from("citas")
   .select("*")
-  .eq("user_id",currentUser.id)
-  .order("id",{ascending:false});
+  .eq(
+    "user_id",
+    currentUser.id
+  );
 
   appointmentsContainer.innerHTML =
   "";
@@ -411,8 +403,7 @@ async function loadAllAppointments(){
   const { data } =
   await client
   .from("citas")
-  .select("*")
-  .order("id",{ascending:false});
+  .select("*");
 
   adminCitas.innerHTML = "";
 
@@ -425,10 +416,6 @@ async function loadAllAppointments(){
       <h2>
         ${cita.cliente}
       </h2>
-
-      <p>
-        ${cita.telefono}
-      </p>
 
       <p>
         ${cita.servicio}
