@@ -26,63 +26,19 @@
 
 <body>
 
-  <!-- NAVBAR -->
+  <!-- LOGIN SCREEN -->
 
-  <nav class="navbar">
+  <section id="auth-screen" class="auth-screen">
 
-    <h1>
-      Mayra Spa
-    </h1>
+    <div class="auth-card">
 
-    <div class="nav-links">
-
-      <a href="#inicio">
-        Inicio
-      </a>
-
-      <a href="#reservar">
-        Reservar
-      </a>
-
-      <a href="#mis-citas">
-        Mis citas
-      </a>
-
-    </div>
-
-  </nav>
-
-  <!-- HERO -->
-
-  <section id="inicio" class="hero">
-
-    <div class="hero-content">
-
-      <h2>
-        Estética Facial Premium
-      </h2>
+      <h1>
+        Mayra Spa
+      </h1>
 
       <p>
-        Reserva tu tratamiento facial profesional.
+        Estética Facial Premium
       </p>
-
-      <a href="#reservar" class="btn-primary">
-        Reservar ahora
-      </a>
-
-    </div>
-
-  </section>
-
-  <!-- LOGIN -->
-
-  <section class="auth-section">
-
-    <div class="card">
-
-      <h2>
-        Crear cuenta / Iniciar sesión
-      </h2>
 
       <form id="auth-form">
 
@@ -112,146 +68,186 @@
 
   </section>
 
-  <!-- RESERVA -->
+  <!-- APP -->
 
-  <section id="reservar" class="booking-section">
+  <div id="app" class="hidden">
 
-    <div class="card">
+    <!-- NAVBAR -->
 
-      <h2>
-        Reservar cita
-      </h2>
+    <nav class="navbar">
 
-      <form id="booking-form">
+      <h1>
+        Mayra Spa
+      </h1>
 
-        <input
-          id="cliente"
-          type="text"
-          placeholder="Nombre"
-          required
-        />
+      <div class="nav-links">
 
-        <input
-          id="telefono"
-          type="text"
-          placeholder="Teléfono"
-          required
-        />
+        <a href="#reservar">
+          Reservar
+        </a>
 
-        <!-- SERVICIO -->
+        <a href="#mis-citas">
+          Mis citas
+        </a>
 
-        <select id="servicio">
-
-          <option>
-            Limpieza Facial
-          </option>
-
-          <option>
-            Hidratación
-          </option>
-
-          <option>
-            Anti Acné
-          </option>
-
-        </select>
-
-        <!-- FECHA -->
-
-        <input
-          id="fecha"
-          type="date"
-          required
-        />
-
-        <!-- HORARIO -->
-
-        <select id="horario">
-
-          <option value="9:00 AM - 11:00 AM">
-            9:00 AM - 11:00 AM
-          </option>
-
-          <option value="11:30 AM - 1:30 PM">
-            11:30 AM - 1:30 PM
-          </option>
-
-          <option value="2:00 PM - 4:00 PM">
-            2:00 PM - 4:00 PM
-          </option>
-
-        </select>
-
-        <!-- PAGO -->
-
-        <select id="metodo-pago">
-
-          <option>
-            Transfermovil
-          </option>
-
-          <option>
-            Enzona
-          </option>
-
-          <option>
-            Saldo móvil
-          </option>
-
-          <option>
-            Efectivo
-          </option>
-
-        </select>
-
-        <!-- CODIGO -->
-
-        <input
-          id="codigo"
-          type="text"
-          placeholder="Código de confirmación"
-          required
-        />
-
-        <button type="submit">
-          Reservar (50 CUP)
+        <button id="logout-btn">
+          Salir
         </button>
 
-      </form>
+      </div>
 
-      <div id="booking-status"></div>
+    </nav>
 
-    </div>
+    <!-- HERO -->
 
-  </section>
+    <section class="hero">
 
-  <!-- MIS CITAS -->
+      <div class="hero-content">
 
-  <section id="mis-citas">
+        <h2>
+          Bienvenida a Mayra Spa
+        </h2>
 
-    <h2 class="section-title">
-      Mis citas
-    </h2>
+        <p>
+          Reserva tus tratamientos faciales premium.
+        </p>
 
-    <div id="appointments-container"></div>
+      </div>
 
-  </section>
+    </section>
 
-  <!-- ADMIN -->
+    <!-- RESERVA -->
 
-  <section id="admin-panel" class="hidden">
+    <section id="reservar" class="booking-section">
 
-    <div class="card">
+      <div class="card">
 
-      <h2>
-        Panel administrador
+        <h2>
+          Reservar cita
+        </h2>
+
+        <form id="booking-form">
+
+          <input
+            id="cliente"
+            type="text"
+            placeholder="Nombre"
+            required
+          />
+
+          <input
+            id="telefono"
+            type="text"
+            placeholder="Teléfono"
+            required
+          />
+
+          <select id="servicio">
+
+            <option>
+              Limpieza Facial
+            </option>
+
+            <option>
+              Hidratación
+            </option>
+
+            <option>
+              Anti Acné
+            </option>
+
+          </select>
+
+          <input
+            id="fecha"
+            type="date"
+            required
+          />
+
+          <select id="horario">
+
+            <option value="9:00 AM - 11:00 AM">
+              9:00 AM - 11:00 AM
+            </option>
+
+            <option value="11:30 AM - 1:30 PM">
+              11:30 AM - 1:30 PM
+            </option>
+
+            <option value="2:00 PM - 4:00 PM">
+              2:00 PM - 4:00 PM
+            </option>
+
+          </select>
+
+          <select id="metodo-pago">
+
+            <option>
+              Transfermovil
+            </option>
+
+            <option>
+              Enzona
+            </option>
+
+            <option>
+              Saldo móvil
+            </option>
+
+            <option>
+              Efectivo
+            </option>
+
+          </select>
+
+          <input
+            id="codigo"
+            type="text"
+            placeholder="Código de confirmación"
+            required
+          />
+
+          <button type="submit">
+            Reservar (50 CUP)
+          </button>
+
+        </form>
+
+        <div id="booking-status"></div>
+
+      </div>
+
+    </section>
+
+    <!-- MIS CITAS -->
+
+    <section id="mis-citas">
+
+      <h2 class="section-title">
+        Mis citas
       </h2>
 
-      <div id="admin-citas"></div>
+      <div id="appointments-container"></div>
 
-    </div>
+    </section>
 
-  </section>
+    <!-- ADMIN -->
+
+    <section id="admin-panel" class="hidden">
+
+      <div class="card">
+
+        <h2>
+          Panel administrador
+        </h2>
+
+        <div id="admin-citas"></div>
+
+      </div>
+
+    </section>
+
+  </div>
 
   <!-- WHATSAPP -->
 
@@ -262,8 +258,6 @@
   >
     💬
   </a>
-
-  <!-- JS -->
 
   <script src="app.js"></script>
 
