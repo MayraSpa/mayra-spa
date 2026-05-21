@@ -1,7 +1,3 @@
-// ======================
-// SUPABASE
-// ======================
-
 const SUPABASE_URL =
 "https://qwlxsvzhxvvdbhiwxlbb.supabase.co";
 
@@ -14,39 +10,25 @@ supabase.createClient(
   SUPABASE_KEY
 );
 
-// ======================
 // ELEMENTOS
-// ======================
 
 const authForm =
-document.getElementById(
-  "auth-form"
-);
+document.getElementById("auth-form");
 
 const authScreen =
-document.getElementById(
-  "auth-screen"
-);
+document.getElementById("auth-screen");
 
 const app =
-document.getElementById(
-  "app"
-);
+document.getElementById("app");
 
 const authStatus =
-document.getElementById(
-  "auth-status"
-);
+document.getElementById("auth-status");
 
 const bookingForm =
-document.getElementById(
-  "booking-form"
-);
+document.getElementById("booking-form");
 
 const bookingStatus =
-document.getElementById(
-  "booking-status"
-);
+document.getElementById("booking-status");
 
 const appointmentsContainer =
 document.getElementById(
@@ -63,14 +45,10 @@ document.getElementById(
   "admin-citas"
 );
 
-// ======================
-// USER
-// ======================
-
 let currentUser = null;
 
 // ======================
-// CHECK SESSION
+// SESSION
 // ======================
 
 checkSession();
@@ -99,7 +77,7 @@ async function checkSession(){
 
 authForm.addEventListener(
 "submit",
-async(e)=>{
+async (e)=>{
 
   e.preventDefault();
 
@@ -113,8 +91,6 @@ async(e)=>{
     "password"
   ).value;
 
-  // LOGIN
-
   let result =
   await client.auth.signInWithPassword({
 
@@ -123,7 +99,7 @@ async(e)=>{
 
   });
 
-  // REGISTER
+  // SI NO EXISTE -> REGISTRA
 
   if(result.error){
 
@@ -182,7 +158,7 @@ document
 .getElementById("logout-btn")
 .addEventListener(
 "click",
-async()=>{
+async ()=>{
 
   await client.auth.signOut();
 
@@ -213,12 +189,12 @@ function checkAdmin(){
 }
 
 // ======================
-// BOOKING
+// RESERVAR
 // ======================
 
 bookingForm.addEventListener(
 "submit",
-async(e)=>{
+async (e)=>{
 
   e.preventDefault();
 
@@ -235,7 +211,7 @@ async(e)=>{
   if(!codigo){
 
     bookingStatus.innerHTML =
-    "Debes ingresar el código";
+    "Debes ingresar código";
 
     return;
 
@@ -310,8 +286,10 @@ async(e)=>{
       "servicio"
     ).value,
 
+    fecha:
     fecha,
 
+    horario:
     horario,
 
     metodo_pago:
@@ -337,19 +315,22 @@ async(e)=>{
   }
 
   bookingStatus.innerHTML =
-  "✅ Cita enviada";
+  "✅ Reserva enviada";
 
   bookingForm.reset();
 
   loadMyAppointments();
 
 }
+);
 
 // ======================
 // MIS CITAS
 // ======================
 
 async function loadMyAppointments(){
+
+  if(!currentUser) return;
 
   const { data } =
   await client
@@ -363,7 +344,7 @@ async function loadMyAppointments(){
   appointmentsContainer.innerHTML =
   "";
 
-  data.forEach(cita=>{
+  data.forEach((cita)=>{
 
     appointmentsContainer.innerHTML += `
 
@@ -407,7 +388,7 @@ async function loadAllAppointments(){
 
   adminCitas.innerHTML = "";
 
-  data.forEach(cita=>{
+  data.forEach((cita)=>{
 
     adminCitas.innerHTML += `
 
@@ -445,22 +426,16 @@ async function loadAllAppointments(){
 
       <br>
 
-      <button
-        onclick="updateStatus(
-          ${cita.id},
-          'Confirmada'
-        )"
-      >
+      <button onclick="updateStatus(${cita.id}, 'Confirmada')">
+
         Confirmar
+
       </button>
 
-      <button
-        onclick="updateStatus(
-          ${cita.id},
-          'Cancelada'
-        )"
-      >
+      <button onclick="updateStatus(${cita.id}, 'Cancelada')">
+
         Cancelar
+
       </button>
 
     </div>
@@ -483,7 +458,7 @@ estado
   await client
   .from("citas")
   .update({
-    estado
+    estado:estado
   })
   .eq("id",id);
 
