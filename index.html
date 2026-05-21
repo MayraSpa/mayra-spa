@@ -13,22 +13,41 @@
     Mayra Spa Estética Facial
   </title>
 
+  <meta
+    name="description"
+    content="Mayra Spa Estética Facial"
+  />
+
   <!-- TAILWIND -->
+
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
   <!-- SUPABASE -->
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <!-- CSS -->
-  <link rel="stylesheet" href="style.css" />
+
+  <link
+    rel="stylesheet"
+    href="style.css"
+  />
 
 </head>
 
 <body>
 
-  <!-- LOGIN SCREEN -->
+  <!-- LOADER -->
 
-  <section id="auth-screen" class="auth-screen">
+  <div id="loader">
+
+    <div class="spinner"></div>
+
+  </div>
+
+  <!-- AUTH -->
+
+  <section id="auth-screen">
 
     <div class="auth-card">
 
@@ -57,7 +76,9 @@
         />
 
         <button type="submit">
+
           Entrar / Registrarse
+
         </button>
 
       </form>
@@ -76,11 +97,15 @@
 
     <nav class="navbar">
 
-      <h1>
+      <h2>
         Mayra Spa
-      </h1>
+      </h2>
 
       <div class="nav-links">
+
+        <a href="#dashboard">
+          Inicio
+        </a>
 
         <a href="#reservar">
           Reservar
@@ -91,7 +116,9 @@
         </a>
 
         <button id="logout-btn">
+
           Salir
+
         </button>
 
       </div>
@@ -100,25 +127,76 @@
 
     <!-- HERO -->
 
-    <section class="hero">
+    <section id="dashboard" class="hero">
 
       <div class="hero-content">
 
-        <h2>
-          Bienvenida a Mayra Spa
-        </h2>
+        <h1>
+          Bienvenida a
+          Mayra Spa
+        </h1>
 
         <p>
-          Reserva tus tratamientos faciales premium.
+          Cuidado facial premium,
+          relajación y belleza.
         </p>
 
       </div>
 
     </section>
 
-    <!-- RESERVA -->
+    <!-- INFO -->
 
-    <section id="reservar" class="booking-section">
+    <section class="info-grid">
+
+      <div class="info-card">
+
+        <h3>
+          💜 Horarios
+        </h3>
+
+        <p>
+          Martes a sábado
+        </p>
+
+        <p>
+          9:00 AM - 4:00 PM
+        </p>
+
+      </div>
+
+      <div class="info-card">
+
+        <h3>
+          💳 Pago
+        </h3>
+
+        <p>
+          50 CUP reserva
+        </p>
+
+      </div>
+
+      <div class="info-card">
+
+        <h3>
+          📍 Estado
+        </h3>
+
+        <p>
+          Procesando
+        </p>
+
+      </div>
+
+    </section>
+
+    <!-- RESERVAR -->
+
+    <section
+      id="reservar"
+      class="booking-section"
+    >
 
       <div class="card">
 
@@ -203,12 +281,14 @@
           <input
             id="codigo"
             type="text"
-            placeholder="Código de confirmación"
+            placeholder="Código confirmación"
             required
           />
 
           <button type="submit">
+
             Reservar (50 CUP)
+
           </button>
 
         </form>
@@ -224,26 +304,31 @@
     <section id="mis-citas">
 
       <h2 class="section-title">
+
         Mis citas
+
       </h2>
 
-      <div id="appointments-container"></div>
+      <div
+        id="appointments-container"
+      ></div>
 
     </section>
 
     <!-- ADMIN -->
 
-    <section id="admin-panel" class="hidden">
+    <section
+      id="admin-panel"
+      class="hidden"
+    >
 
-      <div class="card">
+      <h2 class="section-title">
 
-        <h2>
-          Panel administrador
-        </h2>
+        Panel administrador
 
-        <div id="admin-citas"></div>
+      </h2>
 
-      </div>
+      <div id="admin-citas"></div>
 
     </section>
 
