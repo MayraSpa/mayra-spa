@@ -58,6 +58,30 @@ document.getElementById(
 );
 
 // =====================
+// SESION ACTIVA
+// =====================
+
+checkSession();
+
+async function checkSession(){
+
+  const {
+    data
+  } =
+  await client.auth.getUser();
+
+  if(data.user){
+
+    currentUser =
+    data.user;
+
+    openApp();
+
+  }
+
+}
+
+// =====================
 // AUTH
 // =====================
 
@@ -72,6 +96,41 @@ async(e)=>{
 
   const password =
   document.getElementById("password").value;
+
+  let result =
+  await client.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if(result.error){
+
+    result =
+    await client.auth.signUp({
+      email,
+      password
+    });
+
+  }
+
+  if(result.error){
+
+    authStatus.innerHTML =
+    "❌ Error";
+
+    return;
+  }
+
+  currentUser =
+  result.data.user;
+
+  authStatus.innerHTML =
+  "✅ Bienvenido";
+
+  openApp();
+
+}
+);
 
   // LOGIN
 
@@ -370,3 +429,39 @@ async function loadAllAppointments(){
   });
 
 }
+// =====================
+// ABRIR APP
+// =====================
+
+function openApp(){
+
+  authScreen.classList.add(
+    "hidden"
+  );
+
+  app.classList.remove(
+    "hidden"
+  );
+
+  checkAdmin();
+
+  loadMyAppointments();
+
+}
+
+// =====================
+// LOGOUT
+// =====================
+
+document
+.getElementById("logout-btn")
+.addEventListener(
+"click",
+async()=>{
+
+  await client.auth.signOut();
+
+  location.reload();
+
+}
+);
