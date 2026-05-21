@@ -229,5 +229,65 @@ button:hover{
     font-size:40px;
 
   }
+.auth-screen{
 
+  min-height:100vh;
+
+  display:flex;
+
+  justify-content:center;
+
+  align-items:center;
+
+  padding:20px;
+
+}
+
+.auth-card{
+
+  width:100%;
+
+  max-width:450px;
+
+  background:rgba(255,255,255,.08);
+
+  backdrop-filter:blur(10px);
+
+  border-radius:30px;
+
+  padding:40px;
+
+  text-align:center;
+
+}
+
+.auth-card h1{
+
+  font-size:50px;
+
+  margin-bottom:10px;
+
+}
+
+.auth-card p{
+
+  margin-bottom:30px;
+
+  opacity:.8;
+
+}
+
+#logout-btn{
+
+  background:#ef4444;
+
+  color:white;
+
+  border:none;
+
+  padding:10px 20px;
+
+  border-radius:10px;
+
+}
 }
