@@ -10,8 +10,6 @@ supabase.createClient(
   SUPABASE_KEY
 );
 
-// ELEMENTOS
-
 const authForm =
 document.getElementById("auth-form");
 
@@ -31,39 +29,27 @@ const bookingStatus =
 document.getElementById("booking-status");
 
 const appointmentsContainer =
-document.getElementById(
-  "appointments-container"
-);
+document.getElementById("appointments-container");
 
 const adminPanel =
-document.getElementById(
-  "admin-panel"
-);
+document.getElementById("admin-panel");
 
 const adminCitas =
-document.getElementById(
-  "admin-citas"
-);
+document.getElementById("admin-citas");
 
 let currentUser = null;
 
-// ======================
 // SESSION
-// ======================
-
-checkSession();
 
 async function checkSession(){
 
-  const {
-    data
-  } =
+  const response =
   await client.auth.getUser();
 
-  if(data.user){
+  if(response.data.user){
 
     currentUser =
-    data.user;
+    response.data.user;
 
     openApp();
 
@@ -71,43 +57,39 @@ async function checkSession(){
 
 }
 
-// ======================
+checkSession();
+
 // LOGIN
-// ======================
 
 authForm.addEventListener(
 "submit",
-async (e)=>{
+async function(e){
 
   e.preventDefault();
 
   const email =
-  document.getElementById(
-    "email"
-  ).value;
+  document.getElementById("email").value;
 
   const password =
-  document.getElementById(
-    "password"
-  ).value;
+  document.getElementById("password").value;
 
   let result =
   await client.auth.signInWithPassword({
 
-    email,
-    password
+    email:email,
+    password:password
 
   });
 
-  // SI NO EXISTE -> REGISTRA
+  // REGISTER
 
   if(result.error){
 
     result =
     await client.auth.signUp({
 
-      email,
-      password
+      email:email,
+      password:password
 
     });
 
@@ -130,9 +112,7 @@ async (e)=>{
 }
 );
 
-// ======================
 // OPEN APP
-// ======================
 
 function openApp(){
 
@@ -150,15 +130,13 @@ function openApp(){
 
 }
 
-// ======================
 // LOGOUT
-// ======================
 
 document
 .getElementById("logout-btn")
 .addEventListener(
 "click",
-async ()=>{
+async function(){
 
   await client.auth.signOut();
 
@@ -167,9 +145,7 @@ async ()=>{
 }
 );
 
-// ======================
 // ADMIN
-// ======================
 
 function checkAdmin(){
 
@@ -188,13 +164,11 @@ function checkAdmin(){
 
 }
 
-// ======================
 // RESERVAR
-// ======================
 
 bookingForm.addEventListener(
 "submit",
-async (e)=>{
+async function(e){
 
   e.preventDefault();
 
@@ -205,7 +179,8 @@ async (e)=>{
 
   const codigo =
   prompt(
-    `Ingrese código de ${metodoPago}`
+    "Ingrese código de " +
+    metodoPago
   );
 
   if(!codigo){
@@ -243,16 +218,14 @@ async (e)=>{
 
   // VALIDAR HORARIO
 
-  const {
-    data:existing
-  } =
+  const response =
   await client
   .from("citas")
   .select("*")
   .eq("fecha",fecha)
   .eq("horario",horario);
 
-  if(existing.length > 0){
+  if(response.data.length > 0){
 
     bookingStatus.innerHTML =
     "Horario ocupado";
@@ -263,7 +236,7 @@ async (e)=>{
 
   // INSERTAR
 
-  const { error } =
+  const insert =
   await client
   .from("citas")
   .insert([{
@@ -286,11 +259,9 @@ async (e)=>{
       "servicio"
     ).value,
 
-    fecha:
-    fecha,
+    fecha:fecha,
 
-    horario:
-    horario,
+    horario:horario,
 
     metodo_pago:
     metodoPago,
@@ -303,9 +274,9 @@ async (e)=>{
 
   }]);
 
-  if(error){
+  if(insert.error){
 
-    console.error(error);
+    console.log(insert.error);
 
     bookingStatus.innerHTML =
     "Error reservando";
@@ -324,15 +295,13 @@ async (e)=>{
 }
 );
 
-// ======================
 // MIS CITAS
-// ======================
 
 async function loadMyAppointments(){
 
   if(!currentUser) return;
 
-  const { data } =
+  const response =
   await client
   .from("citas")
   .select("*")
@@ -344,111 +313,104 @@ async function loadMyAppointments(){
   appointmentsContainer.innerHTML =
   "";
 
-  data.forEach((cita)=>{
+  response.data.forEach(function(cita){
 
-    appointmentsContainer.innerHTML += `
+    appointmentsContainer.innerHTML +=
 
-    <div class="cita-card">
+    '<div class="cita-card">' +
 
-      <h3>
-        ${cita.servicio}
-      </h3>
+    '<h3>' +
+    cita.servicio +
+    '</h3>' +
 
-      <p>
-        📅 ${cita.fecha}
-      </p>
+    '<p>📅 ' +
+    cita.fecha +
+    '</p>' +
 
-      <p>
-        ⏰ ${cita.horario}
-      </p>
+    '<p>⏰ ' +
+    cita.horario +
+    '</p>' +
 
-      <p>
-        Estado:
-        ${cita.estado}
-      </p>
+    '<p>Estado: ' +
+    cita.estado +
+    '</p>' +
 
-    </div>
-
-    `;
+    '</div>';
 
   });
 
 }
 
-// ======================
 // ADMIN PANEL
-// ======================
 
 async function loadAllAppointments(){
 
-  const { data } =
+  const response =
   await client
   .from("citas")
   .select("*");
 
   adminCitas.innerHTML = "";
 
-  data.forEach((cita)=>{
+  response.data.forEach(function(cita){
 
-    adminCitas.innerHTML += `
+    adminCitas.innerHTML +=
 
-    <div class="cita-card">
+    '<div class="cita-card">' +
 
-      <h2>
-        ${cita.cliente}
-      </h2>
+    '<h2>' +
+    cita.cliente +
+    '</h2>' +
 
-      <p>
-        ${cita.servicio}
-      </p>
+    '<p>' +
+    cita.servicio +
+    '</p>' +
 
-      <p>
-        ${cita.fecha}
-      </p>
+    '<p>' +
+    cita.fecha +
+    '</p>' +
 
-      <p>
-        ${cita.horario}
-      </p>
+    '<p>' +
+    cita.horario +
+    '</p>' +
 
-      <p>
-        ${cita.metodo_pago}
-      </p>
+    '<p>' +
+    cita.metodo_pago +
+    '</p>' +
 
-      <p>
-        Código:
-        ${cita.codigo_confirmacion}
-      </p>
+    '<p>Código: ' +
+    cita.codigo_confirmacion +
+    '</p>' +
 
-      <p>
-        Estado:
-        ${cita.estado}
-      </p>
+    '<p>Estado: ' +
+    cita.estado +
+    '</p>' +
 
-      <br>
+    '<br>' +
 
-      <button onclick="updateStatus(${cita.id}, 'Confirmada')">
+    '<button onclick="updateStatus(' +
+    cita.id +
+    ', \'Confirmada\')">' +
 
-        Confirmar
+    'Confirmar' +
 
-      </button>
+    '</button>' +
 
-      <button onclick="updateStatus(${cita.id}, 'Cancelada')">
+    '<button onclick="updateStatus(' +
+    cita.id +
+    ', \'Cancelada\')">' +
 
-        Cancelar
+    'Cancelar' +
 
-      </button>
+    '</button>' +
 
-    </div>
-
-    `;
+    '</div>';
 
   });
 
 }
 
-// ======================
 // UPDATE STATUS
-// ======================
 
 async function updateStatus(
 id,
@@ -458,7 +420,9 @@ estado
   await client
   .from("citas")
   .update({
+
     estado:estado
+
   })
   .eq("id",id);
 
