@@ -1,6 +1,6 @@
-// =====================
+// ======================
 // SUPABASE
-// =====================
+// ======================
 
 const SUPABASE_URL =
 "https://qwlxsvzhxvvdbhiwxlbb.supabase.co";
@@ -14,38 +14,19 @@ supabase.createClient(
   SUPABASE_KEY
 );
 
-// =====================
+// ======================
 // ELEMENTOS
-// =====================
+// ======================
 
 const authForm =
-document.getElementById("auth-form");
-
-const authStatus =
-document.getElementById("auth-status");
-
-const bookingForm =
-document.getElementById("booking-form");
-
-const bookingStatus =
-document.getElementById("booking-status");
-
-const appointmentsContainer =
 document.getElementById(
-  "appointments-container"
+  "auth-form"
 );
 
-const adminPanel =
-document.getElementById("admin-panel");
-
-const adminCitas =
-document.getElementById("admin-citas");
-
-// =====================
-// USER
-// =====================
-
-let currentUser = null;
+const authStatus =
+document.getElementById(
+  "auth-status"
+);
 
 const authScreen =
 document.getElementById(
@@ -57,9 +38,59 @@ document.getElementById(
   "app"
 );
 
-// =====================
-// SESION ACTIVA
-// =====================
+const bookingForm =
+document.getElementById(
+  "booking-form"
+);
+
+const bookingStatus =
+document.getElementById(
+  "booking-status"
+);
+
+const appointmentsContainer =
+document.getElementById(
+  "appointments-container"
+);
+
+const adminPanel =
+document.getElementById(
+  "admin-panel"
+);
+
+const adminCitas =
+document.getElementById(
+  "admin-citas"
+);
+
+// ======================
+// USER
+// ======================
+
+let currentUser = null;
+
+// ======================
+// LOADER
+// ======================
+
+window.addEventListener(
+"load",
+()=>{
+
+  setTimeout(()=>{
+
+    document
+    .getElementById("loader")
+    .style.display = "none";
+
+  },1000);
+
+}
+);
+
+// ======================
+// SESION
+// ======================
 
 checkSession();
 
@@ -81,9 +112,9 @@ async function checkSession(){
 
 }
 
-// =====================
-// AUTH
-// =====================
+// ======================
+// LOGIN / REGISTER
+// ======================
 
 authForm.addEventListener(
 "submit",
@@ -92,45 +123,14 @@ async(e)=>{
   e.preventDefault();
 
   const email =
-  document.getElementById("email").value;
+  document.getElementById(
+    "email"
+  ).value;
 
   const password =
-  document.getElementById("password").value;
-
-  let result =
-  await client.auth.signInWithPassword({
-    email,
-    password
-  });
-
-  if(result.error){
-
-    result =
-    await client.auth.signUp({
-      email,
-      password
-    });
-
-  }
-
-  if(result.error){
-
-    authStatus.innerHTML =
-    "❌ Error";
-
-    return;
-  }
-
-  currentUser =
-  result.data.user;
-
-  authStatus.innerHTML =
-  "✅ Bienvenido";
-
-  openApp();
-
-}
-);
+  document.getElementById(
+    "password"
+  ).value;
 
   // LOGIN
 
@@ -140,7 +140,7 @@ async(e)=>{
     password
   });
 
-  // SI NO EXISTE -> REGISTER
+  // REGISTER
 
   if(result.error){
 
@@ -157,27 +157,61 @@ async(e)=>{
     authStatus.innerHTML =
     "❌ Error autenticando";
 
-    console.error(result.error);
-
     return;
-  }
 
-  authStatus.innerHTML =
-  "✅ Sesión iniciada";
+  }
 
   currentUser =
   result.data.user;
 
-  checkAdmin();
+  authStatus.innerHTML =
+  "✅ Bienvenido";
 
-  loadMyAppointments();
+  openApp();
 
 }
 );
 
-// =====================
+// ======================
+// ABRIR APP
+// ======================
+
+function openApp(){
+
+  authScreen.classList.add(
+    "hidden"
+  );
+
+  app.classList.remove(
+    "hidden"
+  );
+
+  loadMyAppointments();
+
+  checkAdmin();
+
+}
+
+// ======================
+// LOGOUT
+// ======================
+
+document
+.getElementById("logout-btn")
+.addEventListener(
+"click",
+async()=>{
+
+  await client.auth.signOut();
+
+  location.reload();
+
+}
+);
+
+// ======================
 // ADMIN
-// =====================
+// ======================
 
 function checkAdmin(){
 
@@ -196,9 +230,9 @@ function checkAdmin(){
 
 }
 
-// =====================
+// ======================
 // RESERVAR
-// =====================
+// ======================
 
 bookingForm.addEventListener(
 "submit",
@@ -212,13 +246,18 @@ async(e)=>{
     "⚠️ Debes iniciar sesión";
 
     return;
+
   }
 
   const fecha =
-  document.getElementById("fecha").value;
+  document.getElementById(
+    "fecha"
+  ).value;
 
   const horario =
-  document.getElementById("horario").value;
+  document.getElementById(
+    "horario"
+  ).value;
 
   // VALIDAR DIA
 
@@ -234,11 +273,14 @@ async(e)=>{
     "❌ Solo martes a sábado";
 
     return;
+
   }
 
-  // VALIDAR SI EXISTE
+  // VALIDAR HORARIO
 
-  const { data:existing } =
+  const {
+    data:existing
+  } =
   await client
   .from("citas")
   .select("*")
@@ -251,6 +293,7 @@ async(e)=>{
     "❌ Horario ocupado";
 
     return;
+
   }
 
   // INSERTAR
@@ -307,6 +350,7 @@ async(e)=>{
     "❌ Error reservando";
 
     return;
+
   }
 
   bookingStatus.innerHTML =
@@ -316,12 +360,21 @@ async(e)=>{
 
   loadMyAppointments();
 
+  if(
+    currentUser.email ===
+    "yeraariel0@gmail.com"
+  ){
+
+    loadAllAppointments();
+
+  }
+
 }
 );
 
-// =====================
+// ======================
 // MIS CITAS
-// =====================
+// ======================
 
 async function loadMyAppointments(){
 
@@ -347,6 +400,8 @@ async function loadMyAppointments(){
         ${cita.servicio}
       </h3>
 
+      <br>
+
       <p>
         📅 ${cita.fecha}
       </p>
@@ -360,8 +415,17 @@ async function loadMyAppointments(){
       </p>
 
       <p>
+        🔑 Código:
+        ${cita.codigo_confirmacion}
+      </p>
+
+      <br>
+
+      <p>
         📌 Estado:
-        ${cita.estado}
+        <b>
+          ${cita.estado}
+        </b>
       </p>
 
     </div>
@@ -372,9 +436,9 @@ async function loadMyAppointments(){
 
 }
 
-// =====================
+// ======================
 // ADMIN CITAS
-// =====================
+// ======================
 
 async function loadAllAppointments(){
 
@@ -392,35 +456,64 @@ async function loadAllAppointments(){
 
     <div class="cita-card">
 
-      <h3>
+      <h2>
         ${cita.cliente}
-      </h3>
+      </h2>
+
+      <br>
 
       <p>
-        ${cita.servicio}
+        📞 ${cita.telefono}
       </p>
 
       <p>
-        ${cita.fecha}
+        ✨ ${cita.servicio}
       </p>
 
       <p>
-        ${cita.horario}
+        📅 ${cita.fecha}
       </p>
 
       <p>
-        ${cita.metodo_pago}
+        ⏰ ${cita.horario}
       </p>
 
       <p>
-        Código:
-        ${cita.codigo_confirmacion}
+        💳 ${cita.metodo_pago}
       </p>
+
+      <p>
+        🔑 ${cita.codigo_confirmacion}
+      </p>
+
+      <br>
 
       <p>
         Estado:
-        ${cita.estado}
+        <b>
+          ${cita.estado}
+        </b>
       </p>
+
+      <br>
+
+      <button
+        onclick="updateStatus(
+          ${cita.id},
+          'Confirmada'
+        )"
+      >
+        Confirmar
+      </button>
+
+      <button
+        onclick="updateStatus(
+          ${cita.id},
+          'Cancelada'
+        )"
+      >
+        Cancelar
+      </button>
 
     </div>
 
@@ -429,39 +522,23 @@ async function loadAllAppointments(){
   });
 
 }
-// =====================
-// ABRIR APP
-// =====================
 
-function openApp(){
+// ======================
+// ACTUALIZAR ESTADO
+// ======================
 
-  authScreen.classList.add(
-    "hidden"
-  );
+async function updateStatus(
+id,
+estado
+){
 
-  app.classList.remove(
-    "hidden"
-  );
+  await client
+  .from("citas")
+  .update({
+    estado
+  })
+  .eq("id",id);
 
-  checkAdmin();
-
-  loadMyAppointments();
-
-}
-
-// =====================
-// LOGOUT
-// =====================
-
-document
-.getElementById("logout-btn")
-.addEventListener(
-"click",
-async()=>{
-
-  await client.auth.signOut();
-
-  location.reload();
+  loadAllAppointments();
 
 }
-);
