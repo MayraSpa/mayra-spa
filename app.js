@@ -6,7 +6,7 @@ const SUPABASE_URL =
 "https://qwlxsvzhxvvdbhiwxlbb.supabase.co";
 
 const SUPABASE_KEY =
-"sb_publishable_ieNxKvgX7nTROGOmHNpBbw_GSTTJ9Os";
+"TU_PUBLIC_KEY";
 
 const client =
 supabase.createClient(
@@ -19,34 +19,22 @@ supabase.createClient(
 // ======================
 
 const authForm =
-document.getElementById(
-  "auth-form"
-);
+document.getElementById("auth-form");
 
 const authStatus =
-document.getElementById(
-  "auth-status"
-);
+document.getElementById("auth-status");
 
 const authScreen =
-document.getElementById(
-  "auth-screen"
-);
+document.getElementById("auth-screen");
 
 const app =
-document.getElementById(
-  "app"
-);
+document.getElementById("app");
 
 const bookingForm =
-document.getElementById(
-  "booking-form"
-);
+document.getElementById("booking-form");
 
 const bookingStatus =
-document.getElementById(
-  "booking-status"
-);
+document.getElementById("booking-status");
 
 const appointmentsContainer =
 document.getElementById(
@@ -68,25 +56,6 @@ document.getElementById(
 // ======================
 
 let currentUser = null;
-
-// ======================
-// LOADER
-// ======================
-
-window.addEventListener(
-"load",
-()=>{
-
-  setTimeout(()=>{
-
-    document
-    .getElementById("loader")
-    .style.display = "none";
-
-  },1000);
-
-}
-);
 
 // ======================
 // SESION
@@ -155,7 +124,7 @@ async(e)=>{
   if(result.error){
 
     authStatus.innerHTML =
-    "❌ Error autenticando";
+    result.error.message;
 
     return;
 
@@ -173,7 +142,7 @@ async(e)=>{
 );
 
 // ======================
-// ABRIR APP
+// OPEN APP
 // ======================
 
 function openApp(){
@@ -243,7 +212,26 @@ async(e)=>{
   if(!currentUser){
 
     bookingStatus.innerHTML =
-    "⚠️ Debes iniciar sesión";
+    "Debes iniciar sesión";
+
+    return;
+
+  }
+
+  const metodoPago =
+  document.getElementById(
+    "metodo-pago"
+  ).value;
+
+  const codigo =
+  prompt(
+    `Ingrese código de confirmación de ${metodoPago}`
+  );
+
+  if(!codigo){
+
+    bookingStatus.innerHTML =
+    "Debes ingresar el código";
 
     return;
 
@@ -264,13 +252,10 @@ async(e)=>{
   const dia =
   new Date(fecha).getDay();
 
-  // DOMINGO=0
-  // LUNES=1
-
   if(dia === 0 || dia === 1){
 
     bookingStatus.innerHTML =
-    "❌ Solo martes a sábado";
+    "Solo martes a sábado";
 
     return;
 
@@ -290,7 +275,7 @@ async(e)=>{
   if(existing.length > 0){
 
     bookingStatus.innerHTML =
-    "❌ Horario ocupado";
+    "Horario ocupado";
 
     return;
 
@@ -323,14 +308,10 @@ async(e)=>{
     horario,
 
     metodo_pago:
-    document.getElementById(
-      "metodo-pago"
-    ).value,
+    metodoPago,
 
     codigo_confirmacion:
-    document.getElementById(
-      "codigo"
-    ).value,
+    codigo,
 
     estado:
     "Procesando"
@@ -347,14 +328,14 @@ async(e)=>{
     console.error(error);
 
     bookingStatus.innerHTML =
-    "❌ Error reservando";
+    "Error reservando";
 
     return;
 
   }
 
   bookingStatus.innerHTML =
-  "✅ Reserva enviada";
+  "✅ Cita enviada";
 
   bookingForm.reset();
 
@@ -400,8 +381,6 @@ async function loadMyAppointments(){
         ${cita.servicio}
       </h3>
 
-      <br>
-
       <p>
         📅 ${cita.fecha}
       </p>
@@ -411,21 +390,8 @@ async function loadMyAppointments(){
       </p>
 
       <p>
-        💳 ${cita.metodo_pago}
-      </p>
-
-      <p>
-        🔑 Código:
-        ${cita.codigo_confirmacion}
-      </p>
-
-      <br>
-
-      <p>
-        📌 Estado:
-        <b>
-          ${cita.estado}
-        </b>
+        Estado:
+        ${cita.estado}
       </p>
 
     </div>
@@ -437,7 +403,7 @@ async function loadMyAppointments(){
 }
 
 // ======================
-// ADMIN CITAS
+// ADMIN PANEL
 // ======================
 
 async function loadAllAppointments(){
@@ -460,39 +426,34 @@ async function loadAllAppointments(){
         ${cita.cliente}
       </h2>
 
-      <br>
-
       <p>
-        📞 ${cita.telefono}
+        ${cita.telefono}
       </p>
 
       <p>
-        ✨ ${cita.servicio}
+        ${cita.servicio}
       </p>
 
       <p>
-        📅 ${cita.fecha}
+        ${cita.fecha}
       </p>
 
       <p>
-        ⏰ ${cita.horario}
+        ${cita.horario}
       </p>
 
       <p>
-        💳 ${cita.metodo_pago}
+        ${cita.metodo_pago}
       </p>
 
       <p>
-        🔑 ${cita.codigo_confirmacion}
+        Código:
+        ${cita.codigo_confirmacion}
       </p>
-
-      <br>
 
       <p>
         Estado:
-        <b>
-          ${cita.estado}
-        </b>
+        ${cita.estado}
       </p>
 
       <br>
@@ -524,7 +485,7 @@ async function loadAllAppointments(){
 }
 
 // ======================
-// ACTUALIZAR ESTADO
+// UPDATE STATUS
 // ======================
 
 async function updateStatus(
