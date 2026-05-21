@@ -1,12 +1,6 @@
-*{
+body{
 
   margin:0;
-  padding:0;
-  box-sizing:border-box;
-
-}
-
-body{
 
   font-family:Arial;
 
@@ -14,60 +8,18 @@ body{
   linear-gradient(
     135deg,
     #1e1b4b,
-    #4c1d95,
-    #2e1065
+    #4c1d95
   );
 
   color:white;
 
-  min-height:100vh;
-
 }
 
-/* LOADER */
+.hidden{
 
-#loader{
-
-  position:fixed;
-
-  inset:0;
-
-  background:#1e1b4b;
-
-  display:flex;
-
-  justify-content:center;
-
-  align-items:center;
-
-  z-index:9999;
+  display:none;
 
 }
-
-.spinner{
-
-  width:60px;
-  height:60px;
-
-  border:6px solid #ffffff20;
-
-  border-top:6px solid white;
-
-  border-radius:50%;
-
-  animation:spin 1s linear infinite;
-
-}
-
-@keyframes spin{
-
-  to{
-    transform:rotate(360deg);
-  }
-
-}
-
-/* AUTH */
 
 #auth-screen{
 
@@ -83,19 +35,25 @@ body{
 
 }
 
+.auth-card,
+.card,
+.cita-card{
+
+  background:rgba(255,255,255,.08);
+
+  backdrop-filter:blur(10px);
+
+  border-radius:25px;
+
+  padding:30px;
+
+}
+
 .auth-card{
 
   width:100%;
 
   max-width:450px;
-
-  background:rgba(255,255,255,.08);
-
-  backdrop-filter:blur(15px);
-
-  padding:40px;
-
-  border-radius:30px;
 
 }
 
@@ -105,8 +63,6 @@ body{
 
   font-size:50px;
 
-  margin-bottom:10px;
-
 }
 
 .auth-card p{
@@ -115,29 +71,9 @@ body{
 
   margin-bottom:30px;
 
-  opacity:.8;
-
 }
-
-.hidden{
-
-  display:none !important;
-
-}
-
-/* NAVBAR */
 
 .navbar{
-
-  position:sticky;
-
-  top:0;
-
-  z-index:100;
-
-  background:rgba(255,255,255,.08);
-
-  backdrop-filter:blur(10px);
 
   padding:20px;
 
@@ -147,63 +83,13 @@ body{
 
   align-items:center;
 
-}
-
-.nav-links{
-
-  display:flex;
-
-  gap:20px;
-
-  align-items:center;
-
-}
-
-.nav-links a{
-
-  color:white;
-
-  text-decoration:none;
-
-}
-
-/* HERO */
-
-.hero{
-
-  min-height:70vh;
-
-  display:flex;
-
-  justify-content:center;
-
-  align-items:center;
-
-  text-align:center;
-
-  padding:20px;
-
-}
-
-.hero h1{
-
-  font-size:70px;
-
-  margin-bottom:20px;
-
-}
-
-/* CARDS */
-
-.card,
-.info-card,
-.cita-card{
-
   background:rgba(255,255,255,.08);
 
-  backdrop-filter:blur(10px);
+}
 
-  border-radius:25px;
+.section{
+
+  padding:30px 20px;
 
 }
 
@@ -213,32 +99,7 @@ body{
 
   margin:auto;
 
-  padding:30px;
-
 }
-
-.info-grid{
-
-  display:grid;
-
-  grid-template-columns:
-  repeat(auto-fit,minmax(250px,1fr));
-
-  gap:20px;
-
-  padding:20px;
-
-}
-
-.info-card{
-
-  padding:30px;
-
-  text-align:center;
-
-}
-
-/* FORM */
 
 form{
 
@@ -254,11 +115,11 @@ input,
 select,
 button{
 
+  padding:15px;
+
   border:none;
 
   border-radius:15px;
-
-  padding:15px;
 
 }
 
@@ -270,8 +131,6 @@ button{
 
   cursor:pointer;
 
-  transition:.3s;
-
 }
 
 button:hover{
@@ -280,32 +139,20 @@ button:hover{
 
 }
 
-.booking-section{
-
-  padding:50px 20px;
-
-}
-
-/* CITAS */
-
-.section-title{
+.title{
 
   text-align:center;
 
-  margin:50px 0 20px;
-
-  font-size:40px;
+  margin-bottom:20px;
 
 }
 
 #appointments-container,
 #admin-citas{
 
-  max-width:1000px;
+  max-width:900px;
 
   margin:auto;
-
-  padding:20px;
 
   display:flex;
 
@@ -317,56 +164,6 @@ button:hover{
 
 .cita-card{
 
-  padding:25px;
-
-}
-
-/* WHATSAPP */
-
-.whatsapp-btn{
-
-  position:fixed;
-
-  bottom:20px;
-
-  right:20px;
-
-  width:65px;
-
-  height:65px;
-
-  background:#22c55e;
-
-  border-radius:50%;
-
-  display:flex;
-
-  justify-content:center;
-
-  align-items:center;
-
-  text-decoration:none;
-
-  font-size:30px;
-
-}
-
-/* RESPONSIVE */
-
-@media(max-width:700px){
-
-  .hero h1{
-
-    font-size:45px;
-
-  }
-
-  .navbar{
-
-    flex-direction:column;
-
-    gap:20px;
-
-  }
+  padding:20px;
 
 }
