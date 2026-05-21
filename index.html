@@ -2,50 +2,31 @@
 <html lang="es">
 <head>
 
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
 
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0"
-  />
+  >
 
   <title>
-    Mayra Spa Estética Facial
+    Mayra Spa
   </title>
-
-  <meta
-    name="description"
-    content="Mayra Spa Estética Facial"
-  />
-
-  <!-- TAILWIND -->
 
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
-  <!-- SUPABASE -->
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <!-- CSS -->
 
   <link
     rel="stylesheet"
     href="style.css"
-  />
+  >
 
 </head>
 
 <body>
 
-  <!-- LOADER -->
-
-  <div id="loader">
-
-    <div class="spinner"></div>
-
-  </div>
-
-  <!-- AUTH -->
+  <!-- LOGIN -->
 
   <section id="auth-screen">
 
@@ -66,14 +47,14 @@
           type="email"
           placeholder="Correo"
           required
-        />
+        >
 
         <input
           id="password"
           type="password"
           placeholder="Contraseña"
           required
-        />
+        >
 
         <button type="submit">
 
@@ -93,110 +74,23 @@
 
   <div id="app" class="hidden">
 
-    <!-- NAVBAR -->
-
     <nav class="navbar">
 
       <h2>
         Mayra Spa
       </h2>
 
-      <div class="nav-links">
+      <button id="logout-btn">
 
-        <a href="#dashboard">
-          Inicio
-        </a>
+        Salir
 
-        <a href="#reservar">
-          Reservar
-        </a>
-
-        <a href="#mis-citas">
-          Mis citas
-        </a>
-
-        <button id="logout-btn">
-
-          Salir
-
-        </button>
-
-      </div>
+      </button>
 
     </nav>
 
-    <!-- HERO -->
-
-    <section id="dashboard" class="hero">
-
-      <div class="hero-content">
-
-        <h1>
-          Bienvenida a
-          Mayra Spa
-        </h1>
-
-        <p>
-          Cuidado facial premium,
-          relajación y belleza.
-        </p>
-
-      </div>
-
-    </section>
-
-    <!-- INFO -->
-
-    <section class="info-grid">
-
-      <div class="info-card">
-
-        <h3>
-          💜 Horarios
-        </h3>
-
-        <p>
-          Martes a sábado
-        </p>
-
-        <p>
-          9:00 AM - 4:00 PM
-        </p>
-
-      </div>
-
-      <div class="info-card">
-
-        <h3>
-          💳 Pago
-        </h3>
-
-        <p>
-          50 CUP reserva
-        </p>
-
-      </div>
-
-      <div class="info-card">
-
-        <h3>
-          📍 Estado
-        </h3>
-
-        <p>
-          Procesando
-        </p>
-
-      </div>
-
-    </section>
-
     <!-- RESERVAR -->
 
-    <section
-      id="reservar"
-      class="booking-section"
-    >
+    <section class="section">
 
       <div class="card">
 
@@ -211,14 +105,14 @@
             type="text"
             placeholder="Nombre"
             required
-          />
+          >
 
           <input
             id="telefono"
             type="text"
             placeholder="Teléfono"
             required
-          />
+          >
 
           <select id="servicio">
 
@@ -240,19 +134,19 @@
             id="fecha"
             type="date"
             required
-          />
+          >
 
           <select id="horario">
 
-            <option value="9:00 AM - 11:00 AM">
+            <option>
               9:00 AM - 11:00 AM
             </option>
 
-            <option value="11:30 AM - 1:30 PM">
+            <option>
               11:30 AM - 1:30 PM
             </option>
 
-            <option value="2:00 PM - 4:00 PM">
+            <option>
               2:00 PM - 4:00 PM
             </option>
 
@@ -278,16 +172,9 @@
 
           </select>
 
-          <input
-            id="codigo"
-            type="text"
-            placeholder="Código confirmación"
-            required
-          />
-
           <button type="submit">
 
-            Reservar (50 CUP)
+            Agendar cita
 
           </button>
 
@@ -301,17 +188,15 @@
 
     <!-- MIS CITAS -->
 
-    <section id="mis-citas">
+    <section class="section">
 
-      <h2 class="section-title">
+      <h2 class="title">
 
         Mis citas
 
       </h2>
 
-      <div
-        id="appointments-container"
-      ></div>
+      <div id="appointments-container"></div>
 
     </section>
 
@@ -319,12 +204,12 @@
 
     <section
       id="admin-panel"
-      class="hidden"
+      class="hidden section"
     >
 
-      <h2 class="section-title">
+      <h2 class="title">
 
-        Panel administrador
+        Panel Admin
 
       </h2>
 
@@ -333,16 +218,6 @@
     </section>
 
   </div>
-
-  <!-- WHATSAPP -->
-
-  <a
-    href="https://wa.me/5359740626"
-    target="_blank"
-    class="whatsapp-btn"
-  >
-    💬
-  </a>
 
   <script src="app.js"></script>
 
