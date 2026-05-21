@@ -47,6 +47,16 @@ document.getElementById("admin-citas");
 
 let currentUser = null;
 
+const authScreen =
+document.getElementById(
+  "auth-screen"
+);
+
+const app =
+document.getElementById(
+  "app"
+);
+
 // =====================
 // AUTH
 // =====================
