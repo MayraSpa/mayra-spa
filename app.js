@@ -10,27 +10,37 @@ supabase.createClient(
   SUPABASE_KEY
 );
 
-// ======================
 // ELEMENTOS
-// ======================
 
 const authForm =
-document.getElementById("auth-form");
+document.getElementById(
+  "auth-form"
+);
 
 const authScreen =
-document.getElementById("auth-screen");
+document.getElementById(
+  "auth-screen"
+);
 
 const app =
-document.getElementById("app");
+document.getElementById(
+  "app"
+);
 
 const authStatus =
-document.getElementById("auth-status");
+document.getElementById(
+  "auth-status"
+);
 
 const bookingForm =
-document.getElementById("booking-form");
+document.getElementById(
+  "booking-form"
+);
 
 const bookingStatus =
-document.getElementById("booking-status");
+document.getElementById(
+  "booking-status"
+);
 
 const appointmentsContainer =
 document.getElementById(
@@ -50,7 +60,7 @@ document.getElementById(
 let currentUser = null;
 
 // ======================
-// CHECK SESSION
+// SESSION
 // ======================
 
 async function checkSession(){
@@ -72,7 +82,7 @@ async function checkSession(){
 checkSession();
 
 // ======================
-// LOGIN / REGISTER
+// LOGIN
 // ======================
 
 authForm.addEventListener(
@@ -104,7 +114,7 @@ async function(e){
 
   });
 
-  // SI NO EXISTE -> REGISTER
+  // REGISTER
 
   if(result.error){
 
@@ -118,11 +128,7 @@ async function(e){
 
   }
 
-  // ERROR
-
   if(result.error){
-
-    console.log(result.error);
 
     authStatus.innerHTML =
     result.error.message;
@@ -130,8 +136,6 @@ async function(e){
     return;
 
   }
-
-  // USER NULL
 
   if(!result.data.user){
 
@@ -141,8 +145,6 @@ async function(e){
     return;
 
   }
-
-  // LOGIN OK
 
   currentUser =
   result.data.user;
@@ -161,13 +163,11 @@ async function(e){
 
 function openApp(){
 
-  authScreen.classList.add(
-    "hidden"
-  );
+  authScreen.style.display =
+  "none";
 
-  app.classList.remove(
-    "hidden"
-  );
+  app.style.display =
+  "block";
 
   loadMyAppointments();
 
@@ -204,9 +204,8 @@ function checkAdmin(){
     "yeraariel0@gmail.com"
   ){
 
-    adminPanel.classList.remove(
-      "hidden"
-    );
+    adminPanel.style.display =
+    "block";
 
     loadAllAppointments();
 
@@ -223,15 +222,6 @@ bookingForm.addEventListener(
 async function(e){
 
   e.preventDefault();
-
-  if(!currentUser){
-
-    bookingStatus.innerHTML =
-    "Debes iniciar sesión";
-
-    return;
-
-  }
 
   const metodoPago =
   document.getElementById(
@@ -267,9 +257,6 @@ async function(e){
 
   const dia =
   new Date(fecha).getDay();
-
-  // DOMINGO = 0
-  // LUNES = 1
 
   if(dia === 0 || dia === 1){
 
@@ -377,8 +364,6 @@ async function(e){
 
 async function loadMyAppointments(){
 
-  if(!currentUser) return;
-
   const response =
   await client
   .from("citas")
@@ -427,7 +412,7 @@ async function loadMyAppointments(){
 }
 
 // ======================
-// ADMIN PANEL
+// ADMIN
 // ======================
 
 async function loadAllAppointments(){
@@ -438,7 +423,8 @@ async function loadAllAppointments(){
   .select("*")
   .order("id",{ascending:false});
 
-  adminCitas.innerHTML = "";
+  adminCitas.innerHTML =
+  "";
 
   if(!response.data) return;
 
