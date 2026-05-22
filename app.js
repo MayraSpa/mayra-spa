@@ -13,34 +13,22 @@ supabase.createClient(
 // ELEMENTOS
 
 const authForm =
-document.getElementById(
-  "auth-form"
-);
+document.getElementById("auth-form");
 
 const authScreen =
-document.getElementById(
-  "auth-screen"
-);
+document.getElementById("auth-screen");
 
 const app =
-document.getElementById(
-  "app"
-);
+document.getElementById("app");
 
 const authStatus =
-document.getElementById(
-  "auth-status"
-);
+document.getElementById("auth-status");
 
 const bookingForm =
-document.getElementById(
-  "booking-form"
-);
+document.getElementById("booking-form");
 
 const bookingStatus =
-document.getElementById(
-  "booking-status"
-);
+document.getElementById("booking-status");
 
 const appointmentsContainer =
 document.getElementById(
@@ -59,9 +47,9 @@ document.getElementById(
 
 let currentUser = null;
 
-// ======================
+let allAppointments = [];
+
 // SESSION
-// ======================
 
 async function checkSession(){
 
@@ -81,9 +69,7 @@ async function checkSession(){
 
 checkSession();
 
-// ======================
 // LOGIN
-// ======================
 
 authForm.addEventListener(
 "submit",
@@ -104,8 +90,6 @@ async function(e){
   authStatus.innerHTML =
   "Conectando...";
 
-  // LOGIN
-
   let result =
   await client.auth.signInWithPassword({
 
@@ -113,8 +97,6 @@ async function(e){
     password:password
 
   });
-
-  // REGISTER
 
   if(result.error){
 
@@ -149,17 +131,12 @@ async function(e){
   currentUser =
   result.data.user;
 
-  authStatus.innerHTML =
-  "✅ Bienvenido";
-
   openApp();
 
 }
 );
 
-// ======================
 // OPEN APP
-// ======================
 
 function openApp(){
 
@@ -175,9 +152,7 @@ function openApp(){
 
 }
 
-// ======================
 // LOGOUT
-// ======================
 
 document
 .getElementById("logout-btn")
@@ -192,14 +167,11 @@ async function(){
 }
 );
 
-// ======================
 // ADMIN
-// ======================
 
 function checkAdmin(){
 
   if(
-    currentUser &&
     currentUser.email ===
     "yeraariel0@gmail.com"
   ){
@@ -213,9 +185,7 @@ function checkAdmin(){
 
 }
 
-// ======================
 // RESERVAR
-// ======================
 
 bookingForm.addEventListener(
 "submit",
@@ -253,8 +223,6 @@ async function(e){
     "horario"
   ).value;
 
-  // VALIDAR DIA
-
   const dia =
   new Date(fecha).getDay();
 
@@ -266,8 +234,6 @@ async function(e){
     return;
 
   }
-
-  // VALIDAR HORARIO
 
   const response =
   await client
@@ -287,8 +253,6 @@ async function(e){
     return;
 
   }
-
-  // INSERTAR
 
   const insert =
   await client
@@ -330,8 +294,6 @@ async function(e){
 
   if(insert.error){
 
-    console.log(insert.error);
-
     bookingStatus.innerHTML =
     "Error reservando";
 
@@ -358,9 +320,7 @@ async function(e){
 }
 );
 
-// ======================
 // MIS CITAS
-// ======================
 
 async function loadMyAppointments(){
 
@@ -377,9 +337,30 @@ async function loadMyAppointments(){
   appointmentsContainer.innerHTML =
   "";
 
-  if(!response.data) return;
-
   response.data.forEach(function(cita){
+
+    let estadoClass =
+    "procesando";
+
+    if(
+      cita.estado ===
+      "Confirmada"
+    ){
+
+      estadoClass =
+      "confirmada";
+
+    }
+
+    if(
+      cita.estado ===
+      "Cancelada"
+    ){
+
+      estadoClass =
+      "cancelada";
+
+    }
 
     appointmentsContainer.innerHTML +=
 
@@ -401,9 +382,13 @@ async function loadMyAppointments(){
     cita.metodo_pago +
     '</p>' +
 
-    '<p>📌 Estado: <b>' +
+    '<div class="estado ' +
+    estadoClass +
+    '">' +
+
     cita.estado +
-    '</b></p>' +
+
+    '</div>' +
 
     '</div>';
 
@@ -411,9 +396,7 @@ async function loadMyAppointments(){
 
 }
 
-// ======================
 // ADMIN
-// ======================
 
 async function loadAllAppointments(){
 
@@ -423,12 +406,43 @@ async function loadAllAppointments(){
   .select("*")
   .order("id",{ascending:false});
 
-  adminCitas.innerHTML =
-  "";
+  allAppointments =
+  response.data;
 
-  if(!response.data) return;
+  renderAdminAppointments(
+    allAppointments
+  );
 
-  response.data.forEach(function(cita){
+}
+
+function renderAdminAppointments(data){
+
+  adminCitas.innerHTML = "";
+
+  data.forEach(function(cita){
+
+    let estadoClass =
+    "procesando";
+
+    if(
+      cita.estado ===
+      "Confirmada"
+    ){
+
+      estadoClass =
+      "confirmada";
+
+    }
+
+    if(
+      cita.estado ===
+      "Cancelada"
+    ){
+
+      estadoClass =
+      "cancelada";
+
+    }
 
     adminCitas.innerHTML +=
 
@@ -462,11 +476,15 @@ async function loadAllAppointments(){
     cita.codigo_confirmacion +
     '</p>' +
 
-    '<p>📌 Estado: <b>' +
-    cita.estado +
-    '</b></p>' +
+    '<div class="estado ' +
+    estadoClass +
+    '">' +
 
-    '<br>' +
+    cita.estado +
+
+    '</div>' +
+
+    '<br><br>' +
 
     '<button onclick="updateStatus(' +
     cita.id +
@@ -490,9 +508,31 @@ async function loadAllAppointments(){
 
 }
 
-// ======================
+function filterAppointments(status){
+
+  if(status === "Todas"){
+
+    renderAdminAppointments(
+      allAppointments
+    );
+
+    return;
+
+  }
+
+  const filtered =
+  allAppointments.filter(
+    cita =>
+    cita.estado === status
+  );
+
+  renderAdminAppointments(
+    filtered
+  );
+
+}
+
 // UPDATE STATUS
-// ======================
 
 async function updateStatus(
 id,
@@ -509,5 +549,7 @@ estado
   .eq("id",id);
 
   loadAllAppointments();
+
+  loadMyAppointments();
 
 }
