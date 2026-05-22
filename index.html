@@ -18,6 +18,10 @@ content="width=device-width, initial-scale=1.0"
 
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 <link
 rel="stylesheet"
 href="style.css"
@@ -26,6 +30,8 @@ href="style.css"
 </head>
 
 <body>
+
+<!-- LOGIN -->
 
 <section id="auth-screen">
 
@@ -40,7 +46,7 @@ href="style.css"
 <input
 id="email"
 type="email"
-placeholder="Correo"
+placeholder="Correo electrónico"
 required
 >
 
@@ -63,10 +69,14 @@ Entrar / Registrarse
 
 </section>
 
+<!-- APP -->
+
 <div
 id="app"
 style="display:none;"
 >
+
+<!-- NAVBAR -->
 
 <nav class="navbar">
 
@@ -92,7 +102,11 @@ Salir
 
 </nav>
 
+<!-- MAIN -->
+
 <div class="main-grid">
+
+<!-- RESERVAR -->
 
 <section class="card">
 
@@ -104,21 +118,59 @@ Reservar cita
 
 <form id="booking-form">
 
+<div class="field">
+
+<label>
+
+👤 Nombre completo
+
+</label>
+
 <input
 id="cliente"
 type="text"
-placeholder="Nombre"
+placeholder="Escribe tu nombre"
 required
 >
+
+</div>
+
+<div class="field">
+
+<label>
+
+📱 Número de teléfono
+
+</label>
 
 <input
 id="telefono"
 type="text"
-placeholder="Teléfono"
+placeholder="+53 55555555"
 required
 >
 
+</div>
+
+<div class="field">
+
+<label>
+
+✨ Tratamiento facial
+
+</label>
+
 <select id="servicio"></select>
+
+</div>
+
+<div class="field">
+
+<label>
+
+📅 Día de la cita
+
+</label>
 
 <input
 id="fecha"
@@ -126,7 +178,27 @@ type="date"
 required
 >
 
+</div>
+
+<div class="field">
+
+<label>
+
+⏰ Turno disponible
+
+</label>
+
 <select id="horario"></select>
+
+</div>
+
+<div class="field">
+
+<label>
+
+💳 Método de pago
+
+</label>
 
 <select id="metodo-pago">
 
@@ -148,17 +220,21 @@ Efectivo
 
 </select>
 
+</div>
+
 <div id="payment-info"></div>
 
 <button type="submit">
 
-Agendar cita
+💜 Confirmar reserva
 
 </button>
 
 </form>
 
 </section>
+
+<!-- MIS CITAS -->
 
 <section class="card">
 
@@ -174,6 +250,8 @@ Mis citas
 
 </div>
 
+<!-- ADMIN -->
+
 <section
 id="admin-panel"
 class="admin-section"
@@ -182,9 +260,27 @@ style="display:none;"
 
 <h2 class="title">
 
-👑 Panel Admin
+👑 Panel Administrador
 
 </h2>
+
+<div style="margin-bottom:20px;display:flex;gap:10px;flex-wrap:wrap;">
+
+<button onclick="exportAppointmentsExcel()">
+
+📥 Exportar Excel
+
+</button>
+
+<button onclick="exportAppointmentsPDF()">
+
+📄 Exportar PDF
+
+</button>
+
+</div>
+
+<!-- CONFIG -->
 
 <div class="config-grid">
 
@@ -212,7 +308,7 @@ style="display:none;"
 
 <input
 id="telefono-transfermovil"
-placeholder="Teléfono confirmación"
+placeholder="Número confirmación"
 >
 
 <h3>Enzona</h3>
@@ -221,7 +317,7 @@ placeholder="Teléfono confirmación"
 
 <input
 id="telefono-enzona"
-placeholder="Teléfono confirmación"
+placeholder="Número confirmación"
 >
 
 <h3>Saldo móvil</h3>
@@ -237,6 +333,8 @@ Guardar configuración
 </div>
 
 </div>
+
+<!-- BLOQUEOS -->
 
 <div class="config-grid">
 
@@ -280,6 +378,8 @@ Bloquear turno
 
 </div>
 
+<!-- FILTROS -->
+
 <div class="admin-filters">
 
 <button onclick="filterAppointments('Todas')">
@@ -305,6 +405,18 @@ Canceladas
 </section>
 
 </div>
+
+<!-- WHATSAPP -->
+
+<a
+href="https://wa.me/5359740626?text=Hola%20Mayra%20Spa%20quiero%20información"
+class="whatsapp-btn"
+target="_blank"
+>
+
+💬
+
+</a>
 
 <script src="app.js"></script>
 
