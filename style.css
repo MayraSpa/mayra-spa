@@ -24,8 +24,7 @@ body{
 }
 
 input,
-select,
-textarea{
+select{
 
   width:100%;
 
@@ -47,23 +46,15 @@ textarea{
 
 }
 
-textarea{
+select option{
 
-  min-height:180px;
-
-  resize:none;
+  background:#32125f;
 
 }
 
 input::placeholder{
 
   color:#ddd;
-
-}
-
-select option{
-
-  background:#32125f;
 
 }
 
@@ -94,7 +85,7 @@ button{
 
 button:hover{
 
-  transform:scale(1.02);
+  transform:scale(1.03);
 
 }
 
@@ -109,60 +100,7 @@ button:hover{
   padding:20px 40px;
 
   background:
-  rgba(255,255,255,.06);
-
-}
-
-.auth-card{
-
-  width:100%;
-
-  max-width:450px;
-
-  background:
-  rgba(255,255,255,.08);
-
-  padding:40px;
-
-  border-radius:30px;
-
-  backdrop-filter:blur(10px);
-
-}
-
-.auth-card h1{
-
-  font-size:58px;
-
-  text-align:center;
-
-}
-
-.auth-card p{
-
-  text-align:center;
-
-  margin-bottom:30px;
-
-}
-
-#auth-screen{
-
-  min-height:100vh;
-
-  display:flex;
-
-  justify-content:center;
-
-  align-items:center;
-
-}
-
-form{
-
-  display:flex;
-
-  flex-direction:column;
+  rgba(255,255,255,.05);
 
 }
 
@@ -189,7 +127,7 @@ form{
   padding:30px;
 
   border:
-  1px solid rgba(255,255,255,.08);
+  1px solid rgba(255,255,255,.1);
 
 }
 
@@ -278,7 +216,7 @@ form{
   display:grid;
 
   grid-template-columns:
-  1fr 1fr 1fr;
+  1fr 1fr;
 
   gap:20px;
 
@@ -296,6 +234,41 @@ form{
   border-radius:15px;
 
   margin-bottom:20px;
+
+}
+
+.auth-card{
+
+  width:100%;
+
+  max-width:450px;
+
+  background:
+  rgba(255,255,255,.08);
+
+  padding:40px;
+
+  border-radius:30px;
+
+}
+
+#auth-screen{
+
+  min-height:100vh;
+
+  display:flex;
+
+  justify-content:center;
+
+  align-items:center;
+
+}
+
+form{
+
+  display:flex;
+
+  flex-direction:column;
 
 }
 
