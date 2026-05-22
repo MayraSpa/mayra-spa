@@ -10,6 +10,12 @@ supabase.createClient(
   SUPABASE_KEY
 );
 
+let currentUser = null;
+
+let allAppointments = [];
+
+let config = null;
+
 // ELEMENTOS
 
 const authForm =
@@ -27,9 +33,6 @@ document.getElementById("auth-status");
 const bookingForm =
 document.getElementById("booking-form");
 
-const bookingStatus =
-document.getElementById("booking-status");
-
 const appointmentsContainer =
 document.getElementById(
   "appointments-container"
@@ -45,9 +48,10 @@ document.getElementById(
   "admin-citas"
 );
 
-let currentUser = null;
-
-let allAppointments = [];
+const paymentInfo =
+document.getElementById(
+  "payment-info"
+);
 
 // SESSION
 
@@ -78,14 +82,10 @@ async function(e){
   e.preventDefault();
 
   const email =
-  document.getElementById(
-    "email"
-  ).value;
+  document.getElementById("email").value;
 
   const password =
-  document.getElementById(
-    "password"
-  ).value;
+  document.getElementById("password").value;
 
   authStatus.innerHTML =
   "Conectando...";
@@ -93,8 +93,8 @@ async function(e){
   let result =
   await client.auth.signInWithPassword({
 
-    email:email,
-    password:password
+    email,
+    password
 
   });
 
@@ -103,8 +103,8 @@ async function(e){
     result =
     await client.auth.signUp({
 
-      email:email,
-      password:password
+      email,
+      password
 
     });
 
@@ -114,15 +114,6 @@ async function(e){
 
     authStatus.innerHTML =
     result.error.message;
-
-    return;
-
-  }
-
-  if(!result.data.user){
-
-    authStatus.innerHTML =
-    "Error autenticando";
 
     return;
 
@@ -138,7 +129,7 @@ async function(e){
 
 // OPEN APP
 
-function openApp(){
+async function openApp(){
 
   authScreen.style.display =
   "none";
@@ -146,30 +137,9 @@ function openApp(){
   app.style.display =
   "block";
 
+  await loadConfig();
+
   loadMyAppointments();
-
-  checkAdmin();
-
-}
-
-// LOGOUT
-
-document
-.getElementById("logout-btn")
-.addEventListener(
-"click",
-async function(){
-
-  await client.auth.signOut();
-
-  location.reload();
-
-}
-);
-
-// ADMIN
-
-function checkAdmin(){
 
   if(
     currentUser.email ===
@@ -179,13 +149,142 @@ function checkAdmin(){
     adminPanel.style.display =
     "block";
 
+    loadAdminConfig();
+
     loadAllAppointments();
 
   }
 
 }
 
-// RESERVAR
+// CONFIG
+
+async function loadConfig(){
+
+  const response =
+  await client
+  .from("configuracion")
+  .select("*")
+  .single();
+
+  config =
+  response.data;
+
+  loadServices();
+
+  loadSchedules();
+
+  updatePaymentInfo();
+
+}
+
+function loadServices(){
+
+  const servicio =
+  document.getElementById(
+    "servicio"
+  );
+
+  servicio.innerHTML = "";
+
+  config.servicios.forEach(s => {
+
+    servicio.innerHTML +=
+
+    `<option>
+
+      ${s.nombre} - ${s.precio}
+
+    </option>`;
+
+  });
+
+}
+
+function loadSchedules(){
+
+  const horario =
+  document.getElementById(
+    "horario"
+  );
+
+  horario.innerHTML = "";
+
+  config.horarios.forEach(h => {
+
+    horario.innerHTML +=
+
+    `<option>
+
+      ${h}
+
+    </option>`;
+
+  });
+
+}
+
+function updatePaymentInfo(){
+
+  const metodo =
+  document.getElementById(
+    "metodo-pago"
+  ).value;
+
+  if(
+    metodo === "Transfermovil"
+  ){
+
+    paymentInfo.innerHTML =
+
+    `Transferir a:<br><br>
+
+    ${config.transfermovil}`;
+
+  }
+
+  else if(
+    metodo === "Enzona"
+  ){
+
+    paymentInfo.innerHTML =
+
+    `Transferir a:<br><br>
+
+    ${config.enzona}`;
+
+  }
+
+  else if(
+    metodo === "Saldo móvil"
+  ){
+
+    paymentInfo.innerHTML =
+
+    `Enviar saldo a:<br><br>
+
+    ${config.saldo_movil}`;
+
+  }
+
+  else{
+
+    paymentInfo.innerHTML =
+
+    `Pago presencial`;
+
+  }
+
+}
+
+document
+.getElementById("metodo-pago")
+.addEventListener(
+"change",
+updatePaymentInfo
+);
+
+// RESERVA
 
 bookingForm.addEventListener(
 "submit",
@@ -193,62 +292,12 @@ async function(e){
 
   e.preventDefault();
 
-  const metodoPago =
-  document.getElementById(
-    "metodo-pago"
-  ).value;
-
   const codigo =
   prompt(
-    "Ingrese código de confirmación de " +
-    metodoPago
+    "Ingrese código de confirmación"
   );
 
   if(!codigo){
-
-    bookingStatus.innerHTML =
-    "Debes ingresar código";
-
-    return;
-
-  }
-
-  const fecha =
-  document.getElementById(
-    "fecha"
-  ).value;
-
-  const horario =
-  document.getElementById(
-    "horario"
-  ).value;
-
-  const dia =
-  new Date(fecha).getDay();
-
-  if(dia === 0 || dia === 1){
-
-    bookingStatus.innerHTML =
-    "Solo martes a sábado";
-
-    return;
-
-  }
-
-  const response =
-  await client
-  .from("citas")
-  .select("*")
-  .eq("fecha",fecha)
-  .eq("horario",horario);
-
-  if(
-    response.data &&
-    response.data.length > 0
-  ){
-
-    bookingStatus.innerHTML =
-    "Horario ocupado";
 
     return;
 
@@ -277,12 +326,20 @@ async function(e){
       "servicio"
     ).value,
 
-    fecha:fecha,
+    fecha:
+    document.getElementById(
+      "fecha"
+    ).value,
 
-    horario:horario,
+    horario:
+    document.getElementById(
+      "horario"
+    ).value,
 
     metodo_pago:
-    metodoPago,
+    document.getElementById(
+      "metodo-pago"
+    ).value,
 
     codigo_confirmacion:
     codigo,
@@ -294,28 +351,17 @@ async function(e){
 
   if(insert.error){
 
-    bookingStatus.innerHTML =
-    "Error reservando";
+    alert("Error reservando");
 
     return;
 
   }
 
-  bookingStatus.innerHTML =
-  "✅ Reserva enviada";
-
   bookingForm.reset();
 
   loadMyAppointments();
 
-  if(
-    currentUser.email ===
-    "yeraariel0@gmail.com"
-  ){
-
-    loadAllAppointments();
-
-  }
+  alert("Reserva enviada");
 
 }
 );
@@ -337,7 +383,7 @@ async function loadMyAppointments(){
   appointmentsContainer.innerHTML =
   "";
 
-  response.data.forEach(function(cita){
+  response.data.forEach(cita => {
 
     let estadoClass =
     "procesando";
@@ -364,39 +410,37 @@ async function loadMyAppointments(){
 
     appointmentsContainer.innerHTML +=
 
-    '<div class="cita-card">' +
+    `<div class="cita-card">
 
-    '<h3>' +
-    cita.servicio +
-    '</h3>' +
+      <h3>
+        ${cita.servicio}
+      </h3>
 
-    '<p>📅 ' +
-    cita.fecha +
-    '</p>' +
+      <p>
+        📅 ${cita.fecha}
+      </p>
 
-    '<p>⏰ ' +
-    cita.horario +
-    '</p>' +
+      <p>
+        ⏰ ${cita.horario}
+      </p>
 
-    '<p>💳 ' +
-    cita.metodo_pago +
-    '</p>' +
+      <p>
+        💳 ${cita.metodo_pago}
+      </p>
 
-    '<div class="estado ' +
-    estadoClass +
-    '">' +
+      <div class="estado ${estadoClass}">
 
-    cita.estado +
+        ${cita.estado}
 
-    '</div>' +
+      </div>
 
-    '</div>';
+    </div>`;
 
   });
 
 }
 
-// ADMIN
+// ADMIN CITAS
 
 async function loadAllAppointments(){
 
@@ -419,7 +463,7 @@ function renderAdminAppointments(data){
 
   adminCitas.innerHTML = "";
 
-  data.forEach(function(cita){
+  data.forEach(cita => {
 
     let estadoClass =
     "procesando";
@@ -446,63 +490,53 @@ function renderAdminAppointments(data){
 
     adminCitas.innerHTML +=
 
-    '<div class="cita-card">' +
+    `<div class="cita-card">
 
-    '<h2>' +
-    cita.cliente +
-    '</h2>' +
+      <h2>
+        ${cita.cliente}
+      </h2>
 
-    '<p>📞 ' +
-    cita.telefono +
-    '</p>' +
+      <p>
+        📞 ${cita.telefono}
+      </p>
 
-    '<p>✨ ' +
-    cita.servicio +
-    '</p>' +
+      <p>
+        ✨ ${cita.servicio}
+      </p>
 
-    '<p>📅 ' +
-    cita.fecha +
-    '</p>' +
+      <p>
+        📅 ${cita.fecha}
+      </p>
 
-    '<p>⏰ ' +
-    cita.horario +
-    '</p>' +
+      <p>
+        💳 ${cita.metodo_pago}
+      </p>
 
-    '<p>💳 ' +
-    cita.metodo_pago +
-    '</p>' +
+      <p>
+        🔑 ${cita.codigo_confirmacion}
+      </p>
 
-    '<p>🔑 ' +
-    cita.codigo_confirmacion +
-    '</p>' +
+      <div class="estado ${estadoClass}">
 
-    '<div class="estado ' +
-    estadoClass +
-    '">' +
+        ${cita.estado}
 
-    cita.estado +
+      </div>
 
-    '</div>' +
+      <br><br>
 
-    '<br><br>' +
+      <button onclick="updateStatus(${cita.id},'Confirmada')">
 
-    '<button onclick="updateStatus(' +
-    cita.id +
-    ', \'Confirmada\')">' +
+        Confirmar
 
-    'Confirmar' +
+      </button>
 
-    '</button> ' +
+      <button onclick="updateStatus(${cita.id},'Cancelada')">
 
-    '<button onclick="updateStatus(' +
-    cita.id +
-    ', \'Cancelada\')">' +
+        Cancelar
 
-    'Cancelar' +
+      </button>
 
-    '</button>' +
-
-    '</div>';
+    </div>`;
 
   });
 
@@ -522,8 +556,7 @@ function filterAppointments(status){
 
   const filtered =
   allAppointments.filter(
-    cita =>
-    cita.estado === status
+    c => c.estado === status
   );
 
   renderAdminAppointments(
@@ -543,13 +576,129 @@ estado
   .from("citas")
   .update({
 
-    estado:estado
+    estado
 
   })
   .eq("id",id);
 
   loadAllAppointments();
 
-  loadMyAppointments();
+}
+
+// ADMIN CONFIG
+
+function loadAdminConfig(){
+
+  document.getElementById(
+    "admin-horarios"
+  ).value =
+
+  config.horarios.join("\n");
+
+  document.getElementById(
+    "admin-servicios"
+  ).value =
+
+  config.servicios.map(s =>
+
+    `${s.nombre} - ${s.precio}`
+
+  ).join("\n");
+
+  document.getElementById(
+    "transfermovil"
+  ).value =
+
+  config.transfermovil;
+
+  document.getElementById(
+    "enzona"
+  ).value =
+
+  config.enzona;
+
+  document.getElementById(
+    "saldo-movil"
+  ).value =
+
+  config.saldo_movil;
 
 }
+
+async function saveConfig(){
+
+  const horarios =
+  document.getElementById(
+    "admin-horarios"
+  ).value
+  .split("\n");
+
+  const servicios =
+  document.getElementById(
+    "admin-servicios"
+  ).value
+  .split("\n")
+  .map(s => {
+
+    const parts =
+    s.split("-");
+
+    return{
+
+      nombre:
+      parts[0].trim(),
+
+      precio:
+      parts[1].trim()
+
+    };
+
+  });
+
+  await client
+  .from("configuracion")
+  .update({
+
+    horarios,
+
+    servicios,
+
+    transfermovil:
+    document.getElementById(
+      "transfermovil"
+    ).value,
+
+    enzona:
+    document.getElementById(
+      "enzona"
+    ).value,
+
+    saldo_movil:
+    document.getElementById(
+      "saldo-movil"
+    ).value
+
+  })
+  .eq("id",1);
+
+  alert(
+    "Configuración guardada"
+  );
+
+  loadConfig();
+
+}
+
+// LOGOUT
+
+document
+.getElementById("logout-btn")
+.addEventListener(
+"click",
+async function(){
+
+  await client.auth.signOut();
+
+  location.reload();
+
+});
