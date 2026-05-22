@@ -45,7 +45,7 @@
         <input
           id="email"
           type="email"
-          placeholder="Correo"
+          placeholder="Correo electrónico"
           required
         >
 
@@ -78,9 +78,17 @@
 
     <nav class="navbar">
 
-      <h2>
-        Mayra Spa
-      </h2>
+      <div>
+
+        <h2>
+          Mayra Spa
+        </h2>
+
+        <span>
+          Estética Facial
+        </span>
+
+      </div>
 
       <button id="logout-btn">
 
@@ -90,11 +98,13 @@
 
     </nav>
 
-    <!-- RESERVAR -->
+    <!-- MAIN -->
 
-    <section class="section">
+    <div class="main-grid">
 
-      <div class="card">
+      <!-- RESERVAR -->
+
+      <section class="card">
 
         <h2 class="title">
 
@@ -186,30 +196,30 @@
 
         <div id="booking-status"></div>
 
-      </div>
+      </section>
 
-    </section>
+      <!-- MIS CITAS -->
 
-    <!-- MIS CITAS -->
+      <section class="card">
 
-    <section class="section">
+        <h2 class="title">
 
-      <h2 class="title">
+          Mis citas
 
-        Mis citas
+        </h2>
 
-      </h2>
+        <div id="appointments-container"></div>
 
-      <div id="appointments-container"></div>
+      </section>
 
-    </section>
+    </div>
 
     <!-- ADMIN -->
 
     <section
       id="admin-panel"
       style="display:none;"
-      class="section"
+      class="admin-section"
     >
 
       <h2 class="title">
@@ -217,6 +227,36 @@
         Panel Administrador
 
       </h2>
+
+      <!-- FILTROS -->
+
+      <div class="admin-filters">
+
+        <button onclick="filterAppointments('Todas')">
+
+          Todas
+
+        </button>
+
+        <button onclick="filterAppointments('Procesando')">
+
+          Procesando
+
+        </button>
+
+        <button onclick="filterAppointments('Confirmada')">
+
+          Confirmadas
+
+        </button>
+
+        <button onclick="filterAppointments('Cancelada')">
+
+          Canceladas
+
+        </button>
+
+      </div>
 
       <div id="admin-citas"></div>
 
