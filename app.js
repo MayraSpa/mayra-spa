@@ -1,8 +1,3 @@
-// PEGA AQUÍ TU app.js ACTUAL COMPLETO
-// Y AL FINAL AGREGA ESTO:
-
-// EXPORTAR EXCEL
-
 async function exportAppointmentsExcel(){
 
 const response =
