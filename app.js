@@ -107,8 +107,6 @@ async function openApp(){
   .innerHTML =
   currentUser.email;
 
-  // VERIFICAR ADMIN
-
   const adminCheck =
   await client
   .from("admins")
@@ -155,8 +153,6 @@ async function loadConfig(){
 
   loadServices();
 
-  loadSchedules();
-
   updatePaymentInfo();
 
 }
@@ -180,22 +176,66 @@ function loadServices(){
 
 }
 
-function loadSchedules(){
+// HORARIOS DINÁMICOS
+
+async function loadSchedules(){
 
   const horario =
   document.getElementById("horario");
 
   horario.innerHTML = "";
 
+  const fecha =
+  document.getElementById("fecha").value;
+
+  if(!fecha){
+
+    return;
+
+  }
+
+  const response =
+  await client
+  .from("citas")
+  .select("*")
+  .eq("fecha",fecha)
+  .neq("estado","Cancelada");
+
+  const ocupados =
+  response.data.map(c=>c.horario);
+
   config.horarios.forEach(h=>{
 
-    horario.innerHTML += `
-      <option>${h}</option>
-    `;
+    if(!ocupados.includes(h)){
+
+      horario.innerHTML += `
+        <option>${h}</option>
+      `;
+
+    }
 
   });
 
+  if(horario.innerHTML === ""){
+
+    horario.innerHTML = `
+      <option>
+        No hay horarios disponibles
+      </option>
+    `;
+
+  }
+
 }
+
+document
+.getElementById("fecha")
+.addEventListener(
+  "change",
+  loadSchedules
+);
+
+// PAGOS
 
 function updatePaymentInfo(){
 
@@ -257,20 +297,26 @@ document
 
   e.preventDefault();
 
-  const codigo =
-  prompt(
-    "Ingrese código de confirmación"
-  );
-
-  if(!codigo) return;
-
-  // VALIDAR TURNO
-
   const fecha =
   document.getElementById("fecha").value;
 
   const horario =
   document.getElementById("horario").value;
+
+  if(
+    horario ===
+    "No hay horarios disponibles"
+  ){
+
+    alert(
+      "No hay horarios libres"
+    );
+
+    return;
+
+  }
+
+  // VALIDAR ANTES DE PAGAR
 
   const check =
   await client
@@ -283,12 +329,21 @@ document
   if(check.data.length > 0){
 
     alert(
-      "Ese horario ya está reservado"
+      "Ese horario ya fue reservado"
     );
+
+    await loadSchedules();
 
     return;
 
   }
+
+  const codigo =
+  prompt(
+    "Ingrese código de confirmación"
+  );
+
+  if(!codigo) return;
 
   const insert =
   await client
@@ -340,6 +395,10 @@ document
   document
   .getElementById("booking-form")
   .reset();
+
+  document
+  .getElementById("horario")
+  .innerHTML = "";
 
   loadMyAppointments();
 
