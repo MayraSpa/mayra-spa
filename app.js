@@ -12,48 +12,13 @@ supabase.createClient(
 
 let currentUser = null;
 
-let allAppointments = [];
-
 let config = null;
 
-// ELEMENTOS
-
-const authForm =
-document.getElementById("auth-form");
-
-const authScreen =
-document.getElementById("auth-screen");
-
-const app =
-document.getElementById("app");
-
-const authStatus =
-document.getElementById("auth-status");
-
-const bookingForm =
-document.getElementById("booking-form");
-
-const appointmentsContainer =
-document.getElementById(
-  "appointments-container"
-);
-
-const adminPanel =
-document.getElementById(
-  "admin-panel"
-);
-
-const adminCitas =
-document.getElementById(
-  "admin-citas"
-);
-
-const paymentInfo =
-document.getElementById(
-  "payment-info"
-);
+let allAppointments = [];
 
 // SESSION
+
+checkSession();
 
 async function checkSession(){
 
@@ -71,11 +36,11 @@ async function checkSession(){
 
 }
 
-checkSession();
-
 // LOGIN
 
-authForm.addEventListener(
+document
+.getElementById("auth-form")
+.addEventListener(
 "submit",
 async function(e){
 
@@ -86,9 +51,6 @@ async function(e){
 
   const password =
   document.getElementById("password").value;
-
-  authStatus.innerHTML =
-  "Conectando...";
 
   let result =
   await client.auth.signInWithPassword({
@@ -112,8 +74,7 @@ async function(e){
 
   if(result.error){
 
-    authStatus.innerHTML =
-    result.error.message;
+    alert(result.error.message);
 
     return;
 
@@ -131,10 +92,14 @@ async function(e){
 
 async function openApp(){
 
-  authScreen.style.display =
+  document.getElementById(
+    "auth-screen"
+  ).style.display =
   "none";
 
-  app.style.display =
+  document.getElementById(
+    "app"
+  ).style.display =
   "block";
 
   await loadConfig();
@@ -146,10 +111,10 @@ async function openApp(){
     "yeraariel0@gmail.com"
   ){
 
-    adminPanel.style.display =
+    document.getElementById(
+      "admin-panel"
+    ).style.display =
     "block";
-
-    loadAdminConfig();
 
     loadAllAppointments();
 
@@ -208,21 +173,30 @@ function loadSchedules(){
     "horario"
   );
 
+  const bloqueoHorario =
+  document.getElementById(
+    "bloqueo-turno-horario"
+  );
+
   horario.innerHTML = "";
+
+  bloqueoHorario.innerHTML = "";
 
   config.horarios.forEach(h => {
 
     horario.innerHTML +=
 
-    `<option>
+    `<option>${h}</option>`;
 
-      ${h}
+    bloqueoHorario.innerHTML +=
 
-    </option>`;
+    `<option>${h}</option>`;
 
   });
 
 }
+
+// PAYMENT
 
 function updatePaymentInfo(){
 
@@ -230,6 +204,11 @@ function updatePaymentInfo(){
   document.getElementById(
     "metodo-pago"
   ).value;
+
+  const paymentInfo =
+  document.getElementById(
+    "payment-info"
+  );
 
   if(
     metodo === "Transfermovil"
@@ -255,18 +234,6 @@ function updatePaymentInfo(){
 
   }
 
-  else if(
-    metodo === "Saldo móvil"
-  ){
-
-    paymentInfo.innerHTML =
-
-    `Enviar saldo a:<br><br>
-
-    ${config.saldo_movil}`;
-
-  }
-
   else{
 
     paymentInfo.innerHTML =
@@ -286,11 +253,76 @@ updatePaymentInfo
 
 // RESERVA
 
-bookingForm.addEventListener(
+document
+.getElementById("booking-form")
+.addEventListener(
 "submit",
 async function(e){
 
   e.preventDefault();
+
+  const fecha =
+  document.getElementById(
+    "fecha"
+  ).value;
+
+  const horario =
+  document.getElementById(
+    "horario"
+  ).value;
+
+  // VERIFICAR BLOQUEOS
+
+  const bloqueos =
+  await client
+  .from("bloqueos")
+  .select("*")
+  .eq("fecha",fecha);
+
+  const blocked =
+  bloqueos.data.find(b =>
+
+    b.horario === "TODOS" ||
+
+    b.horario === horario
+
+  );
+
+  if(blocked){
+
+    alert(
+      "Horario no disponible"
+    );
+
+    return;
+
+  }
+
+  // VERIFICAR CITAS
+
+  const citas =
+  await client
+  .from("citas")
+  .select("*")
+  .eq("fecha",fecha)
+  .eq("horario",horario);
+
+  const occupied =
+  citas.data.find(c =>
+
+    c.estado !== "Cancelada"
+
+  );
+
+  if(occupied){
+
+    alert(
+      "Horario ocupado"
+    );
+
+    return;
+
+  }
 
   const codigo =
   prompt(
@@ -326,15 +358,9 @@ async function(e){
       "servicio"
     ).value,
 
-    fecha:
-    document.getElementById(
-      "fecha"
-    ).value,
+    fecha,
 
-    horario:
-    document.getElementById(
-      "horario"
-    ).value,
+    horario,
 
     metodo_pago:
     document.getElementById(
@@ -351,17 +377,19 @@ async function(e){
 
   if(insert.error){
 
-    alert("Error reservando");
+    alert(
+      "Error reservando"
+    );
 
     return;
 
   }
 
-  bookingForm.reset();
+  alert(
+    "Reserva enviada"
+  );
 
   loadMyAppointments();
-
-  alert("Reserva enviada");
 
 }
 );
@@ -380,8 +408,12 @@ async function loadMyAppointments(){
   )
   .order("id",{ascending:false});
 
-  appointmentsContainer.innerHTML =
-  "";
+  const container =
+  document.getElementById(
+    "appointments-container"
+  );
+
+  container.innerHTML = "";
 
   response.data.forEach(cita => {
 
@@ -408,25 +440,15 @@ async function loadMyAppointments(){
 
     }
 
-    appointmentsContainer.innerHTML +=
+    container.innerHTML +=
 
     `<div class="cita-card">
 
-      <h3>
-        ${cita.servicio}
-      </h3>
+      <h3>${cita.servicio}</h3>
 
-      <p>
-        📅 ${cita.fecha}
-      </p>
+      <p>📅 ${cita.fecha}</p>
 
-      <p>
-        ⏰ ${cita.horario}
-      </p>
-
-      <p>
-        💳 ${cita.metodo_pago}
-      </p>
+      <p>⏰ ${cita.horario}</p>
 
       <div class="estado ${estadoClass}">
 
@@ -440,7 +462,7 @@ async function loadMyAppointments(){
 
 }
 
-// ADMIN CITAS
+// ADMIN
 
 async function loadAllAppointments(){
 
@@ -461,7 +483,12 @@ async function loadAllAppointments(){
 
 function renderAdminAppointments(data){
 
-  adminCitas.innerHTML = "";
+  const admin =
+  document.getElementById(
+    "admin-citas"
+  );
+
+  admin.innerHTML = "";
 
   data.forEach(cita => {
 
@@ -488,33 +515,23 @@ function renderAdminAppointments(data){
 
     }
 
-    adminCitas.innerHTML +=
+    admin.innerHTML +=
 
     `<div class="cita-card">
 
-      <h2>
-        ${cita.cliente}
-      </h2>
+      <h2>${cita.cliente}</h2>
 
-      <p>
-        📞 ${cita.telefono}
-      </p>
+      <p>📞 ${cita.telefono}</p>
 
-      <p>
-        ✨ ${cita.servicio}
-      </p>
+      <p>✨ ${cita.servicio}</p>
 
-      <p>
-        📅 ${cita.fecha}
-      </p>
+      <p>📅 ${cita.fecha}</p>
 
-      <p>
-        💳 ${cita.metodo_pago}
-      </p>
+      <p>⏰ ${cita.horario}</p>
 
-      <p>
-        🔑 ${cita.codigo_confirmacion}
-      </p>
+      <p>💳 ${cita.metodo_pago}</p>
+
+      <p>🔑 ${cita.codigo_confirmacion}</p>
 
       <div class="estado ${estadoClass}">
 
@@ -585,107 +602,55 @@ estado
 
 }
 
-// ADMIN CONFIG
+// BLOQUEOS
 
-function loadAdminConfig(){
+async function blockFullDay(){
 
+  const fecha =
   document.getElementById(
-    "admin-horarios"
-  ).value =
+    "bloqueo-fecha"
+  ).value;
 
-  config.horarios.join("\n");
+  await client
+  .from("bloqueos")
+  .insert([{
 
-  document.getElementById(
-    "admin-servicios"
-  ).value =
+    fecha,
 
-  config.servicios.map(s =>
+    horario:"TODOS"
 
-    `${s.nombre} - ${s.precio}`
+  }]);
 
-  ).join("\n");
-
-  document.getElementById(
-    "transfermovil"
-  ).value =
-
-  config.transfermovil;
-
-  document.getElementById(
-    "enzona"
-  ).value =
-
-  config.enzona;
-
-  document.getElementById(
-    "saldo-movil"
-  ).value =
-
-  config.saldo_movil;
+  alert(
+    "Día bloqueado"
+  );
 
 }
 
-async function saveConfig(){
+async function blockShift(){
 
-  const horarios =
+  const fecha =
   document.getElementById(
-    "admin-horarios"
-  ).value
-  .split("\n");
+    "bloqueo-turno-fecha"
+  ).value;
 
-  const servicios =
+  const horario =
   document.getElementById(
-    "admin-servicios"
-  ).value
-  .split("\n")
-  .map(s => {
-
-    const parts =
-    s.split("-");
-
-    return{
-
-      nombre:
-      parts[0].trim(),
-
-      precio:
-      parts[1].trim()
-
-    };
-
-  });
+    "bloqueo-turno-horario"
+  ).value;
 
   await client
-  .from("configuracion")
-  .update({
+  .from("bloqueos")
+  .insert([{
 
-    horarios,
+    fecha,
+    horario
 
-    servicios,
-
-    transfermovil:
-    document.getElementById(
-      "transfermovil"
-    ).value,
-
-    enzona:
-    document.getElementById(
-      "enzona"
-    ).value,
-
-    saldo_movil:
-    document.getElementById(
-      "saldo-movil"
-    ).value
-
-  })
-  .eq("id",1);
+  }]);
 
   alert(
-    "Configuración guardada"
+    "Turno bloqueado"
   );
-
-  loadConfig();
 
 }
 
