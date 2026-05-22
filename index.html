@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
 
   <meta charset="UTF-8">
@@ -85,7 +86,7 @@
         </h2>
 
         <span>
-          Estética Facial
+          Estética Facial Premium
         </span>
 
       </div>
@@ -128,21 +129,7 @@
             required
           >
 
-          <select id="servicio">
-
-            <option>
-              Limpieza Facial
-            </option>
-
-            <option>
-              Hidratación Facial
-            </option>
-
-            <option>
-              Tratamiento Anti Acné
-            </option>
-
-          </select>
+          <select id="servicio"></select>
 
           <input
             id="fecha"
@@ -150,21 +137,7 @@
             required
           >
 
-          <select id="horario">
-
-            <option>
-              9:00 AM - 11:00 AM
-            </option>
-
-            <option>
-              11:30 AM - 1:30 PM
-            </option>
-
-            <option>
-              2:00 PM - 4:00 PM
-            </option>
-
-          </select>
+          <select id="horario"></select>
 
           <select id="metodo-pago">
 
@@ -186,6 +159,8 @@
 
           </select>
 
+          <div id="payment-info"></div>
+
           <button type="submit">
 
             Agendar cita
@@ -198,7 +173,7 @@
 
       </section>
 
-      <!-- MIS CITAS -->
+      <!-- CITAS -->
 
       <section class="card">
 
@@ -218,8 +193,8 @@
 
     <section
       id="admin-panel"
-      style="display:none;"
       class="admin-section"
+      style="display:none;"
     >
 
       <h2 class="title">
@@ -233,30 +208,99 @@
       <div class="admin-filters">
 
         <button onclick="filterAppointments('Todas')">
-
           Todas
-
         </button>
 
         <button onclick="filterAppointments('Procesando')">
-
           Procesando
-
         </button>
 
         <button onclick="filterAppointments('Confirmada')">
-
           Confirmadas
-
         </button>
 
         <button onclick="filterAppointments('Cancelada')">
-
           Canceladas
-
         </button>
 
       </div>
+
+      <!-- CONFIG -->
+
+      <div class="config-grid">
+
+        <!-- HORARIOS -->
+
+        <div class="card">
+
+          <h3>
+            Horarios
+          </h3>
+
+          <textarea
+            id="admin-horarios"
+          ></textarea>
+
+        </div>
+
+        <!-- SERVICIOS -->
+
+        <div class="card">
+
+          <h3>
+            Servicios
+          </h3>
+
+          <textarea
+            id="admin-servicios"
+          ></textarea>
+
+        </div>
+
+        <!-- TARJETAS -->
+
+        <div class="card">
+
+          <h3>
+            Transfermovil
+          </h3>
+
+          <input
+            id="transfermovil"
+            type="text"
+          >
+
+          <h3>
+            Enzona
+          </h3>
+
+          <input
+            id="enzona"
+            type="text"
+          >
+
+          <h3>
+            Saldo móvil
+          </h3>
+
+          <input
+            id="saldo-movil"
+            type="text"
+          >
+
+          <button
+            onclick="saveConfig()"
+          >
+
+            Guardar Configuración
+
+          </button>
+
+        </div>
+
+      </div>
+
+      <!-- CITAS ADMIN -->
 
       <div id="admin-citas"></div>
 
@@ -267,4 +311,5 @@
   <script src="app.js"></script>
 
 </body>
+
 </html>
