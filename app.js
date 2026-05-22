@@ -152,9 +152,20 @@ async function(){
 function checkAdmin(){
 
   if(
+    currentUser &&
     currentUser.email ===
     "yeraariel0@gmail.com"
   ){
+
+    adminPanel.classList.remove(
+      "hidden"
+    );
+
+    loadAllAppointments();
+
+  }
+
+}
 
     adminPanel.classList.remove(
       "hidden"
