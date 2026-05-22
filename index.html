@@ -18,6 +18,8 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
   <link
     rel="stylesheet"
     href="style.css"
@@ -91,11 +93,17 @@
 
       </div>
 
-      <button id="logout-btn">
+      <div class="user-info">
 
-        Salir
+        <span id="logged-user"></span>
 
-      </button>
+        <button id="logout-btn">
+
+          Salir
+
+        </button>
+
+      </div>
 
     </nav>
 
@@ -103,7 +111,7 @@
 
     <div class="main-grid">
 
-      <!-- RESERVA -->
+      <!-- RESERVAR -->
 
       <section class="card">
 
@@ -169,8 +177,6 @@
 
         </form>
 
-        <div id="booking-status"></div>
-
       </section>
 
       <!-- MIS CITAS -->
@@ -199,9 +205,84 @@
 
       <h2 class="title">
 
-        Panel Administrador
+        👑 Panel Administrador
 
       </h2>
+
+      <!-- CONFIG -->
+
+      <div class="config-grid">
+
+        <!-- SERVICIOS -->
+
+        <div class="card">
+
+          <h3>
+            Servicios
+          </h3>
+
+          <textarea
+            id="admin-servicios"
+          ></textarea>
+
+        </div>
+
+        <!-- HORARIOS -->
+
+        <div class="card">
+
+          <h3>
+            Horarios
+          </h3>
+
+          <textarea
+            id="admin-horarios"
+          ></textarea>
+
+        </div>
+
+        <!-- PAGOS -->
+
+        <div class="card">
+
+          <h3>
+            Transfermovil
+          </h3>
+
+          <input
+            id="transfermovil"
+            type="text"
+          >
+
+          <h3>
+            Enzona
+          </h3>
+
+          <input
+            id="enzona"
+            type="text"
+          >
+
+          <h3>
+            Saldo móvil
+          </h3>
+
+          <input
+            id="saldo-movil"
+            type="text"
+          >
+
+          <button
+            onclick="saveConfig()"
+          >
+
+            Guardar configuración
+
+          </button>
+
+        </div>
+
+      </div>
 
       <!-- BLOQUEOS -->
 
@@ -210,7 +291,7 @@
         <div class="card">
 
           <h3>
-            Bloquear día completo
+            Bloquear día
           </h3>
 
           <input
@@ -222,7 +303,7 @@
             onclick="blockFullDay()"
           >
 
-            Bloquear Día
+            Bloquear día
 
           </button>
 
@@ -247,7 +328,7 @@
             onclick="blockShift()"
           >
 
-            Bloquear Turno
+            Bloquear turno
 
           </button>
 
