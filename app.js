@@ -1,4 +1,5 @@
-// AGREGA ESTO AL FINAL DE TU app.js
+// PEGA AQUÍ TU app.js ACTUAL COMPLETO
+// Y AL FINAL AGREGA ESTO:
 
 // EXPORTAR EXCEL
 
@@ -62,7 +63,7 @@ XLSX.writeFile(
 
 workbook,
 
-`MayraSpa_Citas.xlsx`
+"MayraSpa_Citas.xlsx"
 
 );
 
@@ -89,7 +90,8 @@ return;
 
 }
 
-const { jsPDF } = window.jspdf;
+const { jsPDF } =
+window.jspdf;
 
 const doc =
 new jsPDF();
@@ -97,9 +99,12 @@ new jsPDF();
 doc.setFontSize(18);
 
 doc.text(
+
 "Mayra Spa - Citas Confirmadas",
+
 10,
 15
+
 );
 
 let y = 30;
@@ -165,5 +170,4 @@ y = 20;
 doc.save(
 "MayraSpa_Citas.pdf"
 );
-
 }
