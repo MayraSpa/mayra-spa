@@ -24,7 +24,8 @@ body{
 }
 
 input,
-select{
+select,
+textarea{
 
   width:100%;
 
@@ -43,6 +44,14 @@ select{
 
   border:
   1px solid rgba(255,255,255,.1);
+
+}
+
+textarea{
+
+  min-height:180px;
+
+  resize:none;
 
 }
 
@@ -101,6 +110,16 @@ button:hover{
 
   background:
   rgba(255,255,255,.05);
+
+}
+
+.user-info{
+
+  display:flex;
+
+  align-items:center;
+
+  gap:20px;
 
 }
 
@@ -216,7 +235,7 @@ button:hover{
   display:grid;
 
   grid-template-columns:
-  1fr 1fr;
+  1fr 1fr 1fr;
 
   gap:20px;
 
