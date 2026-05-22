@@ -3,370 +3,310 @@
 
 <head>
 
-  <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0"
+>
 
-  <title>
-    Mayra Spa
-  </title>
+<title>Mayra Spa</title>
 
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
-  <link
-    rel="stylesheet"
-    href="style.css"
-  >
+<link
+rel="stylesheet"
+href="style.css"
+>
 
 </head>
 
 <body>
 
-  <!-- LOGIN -->
+<section id="auth-screen">
 
-  <section id="auth-screen">
+<div class="auth-card">
 
-    <div class="auth-card">
+<h1>Mayra Spa</h1>
 
-      <h1>
-        Mayra Spa
-      </h1>
+<p>Estética Facial Premium</p>
 
-      <p>
-        Estética Facial Premium
-      </p>
+<form id="auth-form">
 
-      <form id="auth-form">
+<input
+id="email"
+type="email"
+placeholder="Correo"
+required
+>
 
-        <input
-          id="email"
-          type="email"
-          placeholder="Correo electrónico"
-          required
-        >
+<input
+id="password"
+type="password"
+placeholder="Contraseña"
+required
+>
 
-        <input
-          id="password"
-          type="password"
-          placeholder="Contraseña"
-          required
-        >
+<button type="submit">
 
-        <button type="submit">
+Entrar / Registrarse
 
-          Entrar / Registrarse
+</button>
 
-        </button>
+</form>
 
-      </form>
+</div>
 
-      <div id="auth-status"></div>
+</section>
 
-    </div>
+<div
+id="app"
+style="display:none;"
+>
 
-  </section>
+<nav class="navbar">
 
-  <!-- APP -->
+<div>
 
-  <div id="app" style="display:none;">
+<h2>Mayra Spa</h2>
 
-    <!-- NAVBAR -->
+<span>Estética Facial</span>
 
-    <nav class="navbar">
+</div>
 
-      <div>
+<div class="user-info">
 
-        <h2>
-          Mayra Spa
-        </h2>
+<span id="logged-user"></span>
 
-        <span>
-          Estética Facial Premium
-        </span>
+<button id="logout-btn">
 
-      </div>
+Salir
 
-      <div class="user-info">
+</button>
 
-        <span id="logged-user"></span>
+</div>
 
-        <button id="logout-btn">
+</nav>
 
-          Salir
+<div class="main-grid">
 
-        </button>
+<section class="card">
 
-      </div>
+<h2 class="title">
 
-    </nav>
+Reservar cita
 
-    <!-- MAIN -->
+</h2>
 
-    <div class="main-grid">
+<form id="booking-form">
 
-      <!-- RESERVAR -->
+<input
+id="cliente"
+type="text"
+placeholder="Nombre"
+required
+>
 
-      <section class="card">
+<input
+id="telefono"
+type="text"
+placeholder="Teléfono"
+required
+>
 
-        <h2 class="title">
+<select id="servicio"></select>
 
-          Reservar cita
+<input
+id="fecha"
+type="date"
+required
+>
 
-        </h2>
+<select id="horario"></select>
 
-        <form id="booking-form">
+<select id="metodo-pago">
 
-          <input
-            id="cliente"
-            type="text"
-            placeholder="Nombre"
-            required
-          >
+<option>
+Transfermovil
+</option>
 
-          <input
-            id="telefono"
-            type="text"
-            placeholder="Teléfono"
-            required
-          >
+<option>
+Enzona
+</option>
 
-          <select id="servicio"></select>
+<option>
+Saldo móvil
+</option>
 
-          <input
-            id="fecha"
-            type="date"
-            required
-          >
+<option>
+Efectivo
+</option>
 
-          <select id="horario"></select>
+</select>
 
-          <select id="metodo-pago">
+<div id="payment-info"></div>
 
-            <option>
-              Transfermovil
-            </option>
+<button type="submit">
 
-            <option>
-              Enzona
-            </option>
+Agendar cita
 
-            <option>
-              Saldo móvil
-            </option>
+</button>
 
-            <option>
-              Efectivo
-            </option>
+</form>
 
-          </select>
+</section>
 
-          <div id="payment-info"></div>
+<section class="card">
 
-          <button type="submit">
+<h2 class="title">
 
-            Agendar cita
+Mis citas
 
-          </button>
+</h2>
 
-        </form>
+<div id="appointments-container"></div>
 
-      </section>
+</section>
 
-      <!-- MIS CITAS -->
+</div>
 
-      <section class="card">
+<section
+id="admin-panel"
+class="admin-section"
+style="display:none;"
+>
 
-        <h2 class="title">
+<h2 class="title">
 
-          Mis citas
+👑 Panel Admin
 
-        </h2>
+</h2>
 
-        <div id="appointments-container"></div>
+<div class="config-grid">
 
-      </section>
+<div class="card">
 
-    </div>
+<h3>Servicios</h3>
 
-    <!-- ADMIN -->
+<textarea id="admin-servicios"></textarea>
 
-    <section
-      id="admin-panel"
-      class="admin-section"
-      style="display:none;"
-    >
+</div>
 
-      <h2 class="title">
+<div class="card">
 
-        👑 Panel Administrador
+<h3>Horarios</h3>
 
-      </h2>
+<textarea id="admin-horarios"></textarea>
 
-      <!-- CONFIG -->
+</div>
 
-      <div class="config-grid">
+<div class="card">
 
-        <!-- SERVICIOS -->
+<h3>Transfermovil</h3>
 
-        <div class="card">
+<input id="transfermovil">
 
-          <h3>
-            Servicios
-          </h3>
+<input
+id="telefono-transfermovil"
+placeholder="Teléfono confirmación"
+>
 
-          <textarea
-            id="admin-servicios"
-          ></textarea>
+<h3>Enzona</h3>
 
-        </div>
+<input id="enzona">
 
-        <!-- HORARIOS -->
+<input
+id="telefono-enzona"
+placeholder="Teléfono confirmación"
+>
 
-        <div class="card">
+<h3>Saldo móvil</h3>
 
-          <h3>
-            Horarios
-          </h3>
+<input id="saldo-movil">
 
-          <textarea
-            id="admin-horarios"
-          ></textarea>
+<button onclick="saveConfig()">
 
-        </div>
+Guardar configuración
 
-        <!-- PAGOS -->
+</button>
 
-        <div class="card">
+</div>
 
-          <h3>
-            Transfermovil
-          </h3>
+</div>
 
-          <input
-            id="transfermovil"
-            type="text"
-          >
+<div class="config-grid">
 
-          <h3>
-            Enzona
-          </h3>
+<div class="card">
 
-          <input
-            id="enzona"
-            type="text"
-          >
+<h3>Bloquear día</h3>
 
-          <h3>
-            Saldo móvil
-          </h3>
+<input
+type="date"
+id="bloqueo-fecha"
+>
 
-          <input
-            id="saldo-movil"
-            type="text"
-          >
+<button onclick="blockFullDay()">
 
-          <button
-            onclick="saveConfig()"
-          >
+Bloquear día
 
-            Guardar configuración
+</button>
 
-          </button>
+</div>
 
-        </div>
+<div class="card">
 
-      </div>
+<h3>Bloquear turno</h3>
 
-      <!-- BLOQUEOS -->
+<input
+type="date"
+id="bloqueo-turno-fecha"
+>
 
-      <div class="config-grid">
+<select
+id="bloqueo-turno-horario"
+></select>
 
-        <div class="card">
+<button onclick="blockShift()">
 
-          <h3>
-            Bloquear día
-          </h3>
+Bloquear turno
 
-          <input
-            type="date"
-            id="bloqueo-fecha"
-          >
+</button>
 
-          <button
-            onclick="blockFullDay()"
-          >
+</div>
 
-            Bloquear día
+</div>
 
-          </button>
+<div class="admin-filters">
 
-        </div>
+<button onclick="filterAppointments('Todas')">
+Todas
+</button>
 
-        <div class="card">
+<button onclick="filterAppointments('Procesando')">
+Procesando
+</button>
 
-          <h3>
-            Bloquear turno
-          </h3>
+<button onclick="filterAppointments('Confirmada')">
+Confirmadas
+</button>
 
-          <input
-            type="date"
-            id="bloqueo-turno-fecha"
-          >
+<button onclick="filterAppointments('Cancelada')">
+Canceladas
+</button>
 
-          <select
-            id="bloqueo-turno-horario"
-          ></select>
+</div>
 
-          <button
-            onclick="blockShift()"
-          >
+<div id="admin-citas"></div>
 
-            Bloquear turno
+</section>
 
-          </button>
+</div>
 
-        </div>
-
-      </div>
-
-      <!-- FILTROS -->
-
-      <div class="admin-filters">
-
-        <button onclick="filterAppointments('Todas')">
-          Todas
-        </button>
-
-        <button onclick="filterAppointments('Procesando')">
-          Procesando
-        </button>
-
-        <button onclick="filterAppointments('Confirmada')">
-          Confirmadas
-        </button>
-
-        <button onclick="filterAppointments('Cancelada')">
-          Canceladas
-        </button>
-
-      </div>
-
-      <!-- CITAS -->
-
-      <div id="admin-citas"></div>
-
-    </section>
-
-  </div>
-
-  <script src="app.js"></script>
+<script src="app.js"></script>
 
 </body>
 
