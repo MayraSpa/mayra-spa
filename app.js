@@ -23,8 +23,11 @@ const TEMPLATE_ID =
 let currentUser = null;
 let config = null;
 let allAppointments = [];
+let isAdmin = false;
 
 checkSession();
+
+// SESIÓN
 
 async function checkSession(){
 
@@ -75,6 +78,7 @@ document
   if(result.error){
 
     alert(result.error.message);
+
     return;
 
   }
@@ -103,10 +107,19 @@ async function openApp(){
   .innerHTML =
   currentUser.email;
 
-  if(
-    currentUser.email ===
-    "yeraariel0@gmail.com"
-  ){
+  // VERIFICAR ADMIN
+
+  const adminCheck =
+  await client
+  .from("admins")
+  .select("*")
+  .eq("email",currentUser.email)
+  .single();
+
+  isAdmin =
+  !!adminCheck.data;
+
+  if(isAdmin){
 
     document
     .getElementById("admin-panel")
@@ -118,10 +131,7 @@ async function openApp(){
 
   await loadMyAppointments();
 
-  if(
-    currentUser.email ===
-    "yeraariel0@gmail.com"
-  ){
+  if(isAdmin){
 
     await loadAllAppointments();
 
@@ -144,7 +154,9 @@ async function loadConfig(){
   config = response.data;
 
   loadServices();
+
   loadSchedules();
+
   updatePaymentInfo();
 
 }
@@ -201,6 +213,7 @@ function updatePaymentInfo(){
       <b>Tarjeta:</b>
       ${config.transfermovil}
       <br><br>
+
       <b>Confirmar al:</b>
       ${config.telefono_transfermovil}
     `;
@@ -213,6 +226,7 @@ function updatePaymentInfo(){
       <b>Tarjeta:</b>
       ${config.enzona}
       <br><br>
+
       <b>Confirmar al:</b>
       ${config.telefono_enzona}
     `;
@@ -250,6 +264,32 @@ document
 
   if(!codigo) return;
 
+  // VALIDAR TURNO
+
+  const fecha =
+  document.getElementById("fecha").value;
+
+  const horario =
+  document.getElementById("horario").value;
+
+  const check =
+  await client
+  .from("citas")
+  .select("*")
+  .eq("fecha",fecha)
+  .eq("horario",horario)
+  .neq("estado","Cancelada");
+
+  if(check.data.length > 0){
+
+    alert(
+      "Ese horario ya está reservado"
+    );
+
+    return;
+
+  }
+
   const insert =
   await client
   .from("citas")
@@ -270,11 +310,9 @@ document
     servicio:
     document.getElementById("servicio").value,
 
-    fecha:
-    document.getElementById("fecha").value,
+    fecha,
 
-    horario:
-    document.getElementById("horario").value,
+    horario,
 
     metodo_pago:
     document.getElementById("metodo-pago").value,
@@ -290,11 +328,14 @@ document
   if(insert.error){
 
     alert(insert.error.message);
+
     return;
 
   }
 
-  alert("Cita enviada");
+  alert(
+    "Cita enviada correctamente"
+  );
 
   document
   .getElementById("booking-form")
@@ -302,10 +343,7 @@ document
 
   loadMyAppointments();
 
-  if(
-    currentUser.email ===
-    "yeraariel0@gmail.com"
-  ){
+  if(isAdmin){
 
     loadAllAppointments();
 
@@ -368,13 +406,9 @@ async function loadMyAppointments(){
 
         <h3>${cita.servicio}</h3>
 
-        <p>
-          📅 ${cita.fecha}
-        </p>
+        <p>📅 ${cita.fecha}</p>
 
-        <p>
-          ⏰ ${cita.horario}
-        </p>
+        <p>⏰ ${cita.horario}</p>
 
         <div class="estado ${estadoClass}">
           ${cita.estado}
@@ -450,25 +484,15 @@ function renderAdminAppointments(data){
 
         <h3>${cita.cliente}</h3>
 
-        <p>
-          📧 ${cita.email}
-        </p>
+        <p>📧 ${cita.email}</p>
 
-        <p>
-          📱 ${cita.telefono}
-        </p>
+        <p>📱 ${cita.telefono}</p>
 
-        <p>
-          ✨ ${cita.servicio}
-        </p>
+        <p>✨ ${cita.servicio}</p>
 
-        <p>
-          📅 ${cita.fecha}
-        </p>
+        <p>📅 ${cita.fecha}</p>
 
-        <p>
-          ⏰ ${cita.horario}
-        </p>
+        <p>⏰ ${cita.horario}</p>
 
         <div class="estado ${estadoClass}">
           ${cita.estado}
@@ -575,11 +599,13 @@ async function updateStatus(
 
   await loadMyAppointments();
 
-  alert("Cita actualizada");
+  alert(
+    "Cita actualizada"
+  );
 
 }
 
-// ADMIN CONFIG
+// GUARDAR CONFIG
 
 async function saveConfig(){
 
@@ -718,20 +744,15 @@ async function exportAppointmentsExcel(){
   const data =
   response.data.map(c=>({
 
-    Fecha:
-    c.fecha,
+    Fecha:c.fecha,
 
-    Horario:
-    c.horario,
+    Horario:c.horario,
 
-    Cliente:
-    c.cliente,
+    Cliente:c.cliente,
 
-    Telefono:
-    c.telefono,
+    Telefono:c.telefono,
 
-    Servicio:
-    c.servicio
+    Servicio:c.servicio
 
   }));
 
