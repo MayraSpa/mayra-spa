@@ -44,6 +44,14 @@ input::placeholder{
 
 }
 
+select option{
+
+  background:#2d1061;
+
+  color:white;
+
+}
+
 button{
 
   border:none;
@@ -164,6 +172,20 @@ form{
 
 }
 
+.navbar h2{
+
+  margin:0;
+
+}
+
+.navbar span{
+
+  opacity:.7;
+
+  font-size:14px;
+
+}
+
 .main-grid{
 
   display:grid;
@@ -259,6 +281,12 @@ form{
 
 }
 
+.admin-section{
+
+  padding:0 40px 40px;
+
+}
+
 .admin-filters{
 
   display:flex;
@@ -273,9 +301,19 @@ form{
 
 }
 
-.admin-filters button{
+#appointments-container,
+#admin-citas{
 
-  padding:10px 20px;
+  margin-top:20px;
+
+}
+
+#auth-status,
+#booking-status{
+
+  margin-top:15px;
+
+  text-align:center;
 
 }
 
