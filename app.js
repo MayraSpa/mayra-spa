@@ -48,12 +48,14 @@ async function checkSession(){
 
   if(response.data.user){
 
-    currentUser =
-    response.data.user;
+   if(result.data.user){
 
-    openApp();
+  currentUser =
+  result.data.user;
 
-  }
+  openApp();
+
+}
 
 }
 
