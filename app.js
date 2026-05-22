@@ -147,7 +147,7 @@ document.getElementById(
 
 await loadConfig();
 
-loadMyAppointments();
+await loadMyAppointments();
 
 if(
 currentUser.email ===
@@ -159,9 +159,9 @@ document.getElementById(
 ).style.display =
 "block";
 
-loadAdminConfig();
+await loadAdminConfig();
 
-loadAllAppointments();
+await loadAllAppointments();
 
 }
 
@@ -492,7 +492,458 @@ alert(
 "Reserva enviada"
 );
 
-loadMyAppointments();
+document.getElementById(
+"booking-form"
+).reset();
+
+await loadMyAppointments();
+
+if(
+currentUser.email ===
+"yeraariel0@gmail.com"
+){
+
+await loadAllAppointments();
+
+}
 
 }
 );
+
+// USER APPOINTMENTS
+
+async function loadMyAppointments(){
+
+const response =
+await client
+.from("citas")
+.select("*")
+.eq(
+"user_id",
+currentUser.id
+)
+.order("id",{ascending:false});
+
+const container =
+document.getElementById(
+"appointments-container"
+);
+
+container.innerHTML = "";
+
+response.data.forEach(cita => {
+
+let estadoClass =
+"procesando";
+
+if(
+cita.estado ===
+"Confirmada"
+){
+
+estadoClass =
+"confirmada";
+
+}
+
+if(
+cita.estado ===
+"Cancelada"
+){
+
+estadoClass =
+"cancelada";
+
+}
+
+container.innerHTML +=
+
+`<div class="cita-card">
+
+<h3>${cita.servicio}</h3>
+
+<p>📅 ${cita.fecha}</p>
+
+<p>⏰ ${cita.horario}</p>
+
+<div class="estado ${estadoClass}">
+
+${cita.estado}
+
+</div>
+
+</div>`;
+
+});
+
+}
+
+// ADMIN
+
+async function loadAllAppointments(){
+
+const response =
+await client
+.from("citas")
+.select("*")
+.order("id",{ascending:false});
+
+allAppointments =
+response.data;
+
+renderAdminAppointments(
+allAppointments
+);
+
+}
+
+function renderAdminAppointments(data){
+
+const admin =
+document.getElementById(
+"admin-citas"
+);
+
+admin.innerHTML = "";
+
+data.forEach(cita => {
+
+let estadoClass =
+"procesando";
+
+if(
+cita.estado ===
+"Confirmada"
+){
+
+estadoClass =
+"confirmada";
+
+}
+
+if(
+cita.estado ===
+"Cancelada"
+){
+
+estadoClass =
+"cancelada";
+
+}
+
+admin.innerHTML +=
+
+`<div class="cita-card">
+
+<h2>${cita.cliente}</h2>
+
+<p>📧 ${cita.email}</p>
+
+<p>📞 ${cita.telefono}</p>
+
+<p>✨ ${cita.servicio}</p>
+
+<p>📅 ${cita.fecha}</p>
+
+<p>⏰ ${cita.horario}</p>
+
+<p>💳 ${cita.metodo_pago}</p>
+
+<p>🔑 ${cita.codigo_confirmacion}</p>
+
+<div class="estado ${estadoClass}">
+
+${cita.estado}
+
+</div>
+
+<br><br>
+
+<button onclick="updateStatus(${cita.id},'Confirmada','${cita.email}','${cita.servicio}','${cita.fecha}','${cita.horario}')">
+
+Confirmar
+
+</button>
+
+<button onclick="updateStatus(${cita.id},'Cancelada','${cita.email}','${cita.servicio}','${cita.fecha}','${cita.horario}')">
+
+Cancelar
+
+</button>
+
+</div>`;
+
+});
+
+}
+
+function filterAppointments(status){
+
+if(status === "Todas"){
+
+renderAdminAppointments(
+allAppointments
+);
+
+return;
+
+}
+
+const filtered =
+allAppointments.filter(
+c => c.estado === status
+);
+
+renderAdminAppointments(
+filtered
+);
+
+}
+
+// UPDATE STATUS
+
+async function updateStatus(
+id,
+estado,
+email,
+servicio,
+fecha,
+hora
+){
+
+await client
+.from("citas")
+.update({
+
+estado
+
+})
+.eq("id",id);
+
+// EMAIL
+
+await emailjs.send(
+
+SERVICE_ID,
+
+TEMPLATE_ID,
+
+{
+
+to_email: email,
+
+fecha: fecha,
+
+hora: hora,
+
+servicio: servicio
+
+}
+
+);
+
+await loadAllAppointments();
+
+await loadMyAppointments();
+
+alert(
+`Cita ${estado}`
+);
+
+}
+
+// BLOCK DAY
+
+async function blockFullDay(){
+
+const fecha =
+document.getElementById(
+"bloqueo-fecha"
+).value;
+
+await client
+.from("bloqueos")
+.insert([{
+
+fecha,
+
+horario:"TODOS"
+
+}]);
+
+alert(
+"Día bloqueado"
+);
+
+}
+
+// BLOCK SHIFT
+
+async function blockShift(){
+
+const fecha =
+document.getElementById(
+"bloqueo-turno-fecha"
+).value;
+
+const horario =
+document.getElementById(
+"bloqueo-turno-horario"
+).value;
+
+await client
+.from("bloqueos")
+.insert([{
+
+fecha,
+horario
+
+}]);
+
+alert(
+"Turno bloqueado"
+);
+
+}
+
+// ADMIN CONFIG
+
+async function loadAdminConfig(){
+
+document.getElementById(
+"admin-horarios"
+).value =
+
+config.horarios.join("\n");
+
+document.getElementById(
+"admin-servicios"
+).value =
+
+config.servicios.map(s =>
+
+`${s.nombre} - ${s.precio}`
+
+).join("\n");
+
+document.getElementById(
+"transfermovil"
+).value =
+
+config.transfermovil;
+
+document.getElementById(
+"enzona"
+).value =
+
+config.enzona;
+
+document.getElementById(
+"saldo-movil"
+).value =
+
+config.saldo_movil;
+
+document.getElementById(
+"telefono-transfermovil"
+).value =
+
+config.telefono_transfermovil;
+
+document.getElementById(
+"telefono-enzona"
+).value =
+
+config.telefono_enzona;
+
+}
+
+async function saveConfig(){
+
+const horarios =
+document.getElementById(
+"admin-horarios"
+).value
+.split("\n");
+
+const servicios =
+document.getElementById(
+"admin-servicios"
+).value
+.split("\n")
+.map(s => {
+
+const parts =
+s.split("-");
+
+return{
+
+nombre:
+parts[0].trim(),
+
+precio:
+parts[1].trim()
+
+};
+
+});
+
+await client
+.from("configuracion")
+.update({
+
+horarios,
+
+servicios,
+
+transfermovil:
+document.getElementById(
+"transfermovil"
+).value,
+
+enzona:
+document.getElementById(
+"enzona"
+).value,
+
+saldo_movil:
+document.getElementById(
+"saldo-movil"
+).value,
+
+telefono_transfermovil:
+document.getElementById(
+"telefono-transfermovil"
+).value,
+
+telefono_enzona:
+document.getElementById(
+"telefono-enzona"
+).value
+
+})
+.eq("id",1);
+
+alert(
+"Configuración guardada"
+);
+
+await loadConfig();
+
+await loadAdminConfig();
+
+}
+
+// LOGOUT
+
+document
+.getElementById("logout-btn")
+.addEventListener(
+"click",
+async function(){
+
+await client.auth.signOut();
+
+location.reload();
+
+});
