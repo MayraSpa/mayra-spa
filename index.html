@@ -103,7 +103,7 @@
 
     <div class="main-grid">
 
-      <!-- RESERVAR -->
+      <!-- RESERVA -->
 
       <section class="card">
 
@@ -173,7 +173,7 @@
 
       </section>
 
-      <!-- CITAS -->
+      <!-- MIS CITAS -->
 
       <section class="card">
 
@@ -203,6 +203,58 @@
 
       </h2>
 
+      <!-- BLOQUEOS -->
+
+      <div class="config-grid">
+
+        <div class="card">
+
+          <h3>
+            Bloquear día completo
+          </h3>
+
+          <input
+            type="date"
+            id="bloqueo-fecha"
+          >
+
+          <button
+            onclick="blockFullDay()"
+          >
+
+            Bloquear Día
+
+          </button>
+
+        </div>
+
+        <div class="card">
+
+          <h3>
+            Bloquear turno
+          </h3>
+
+          <input
+            type="date"
+            id="bloqueo-turno-fecha"
+          >
+
+          <select
+            id="bloqueo-turno-horario"
+          ></select>
+
+          <button
+            onclick="blockShift()"
+          >
+
+            Bloquear Turno
+
+          </button>
+
+        </div>
+
+      </div>
+
       <!-- FILTROS -->
 
       <div class="admin-filters">
@@ -225,82 +277,7 @@
 
       </div>
 
-      <!-- CONFIG -->
-
-      <div class="config-grid">
-
-        <!-- HORARIOS -->
-
-        <div class="card">
-
-          <h3>
-            Horarios
-          </h3>
-
-          <textarea
-            id="admin-horarios"
-          ></textarea>
-
-        </div>
-
-        <!-- SERVICIOS -->
-
-        <div class="card">
-
-          <h3>
-            Servicios
-          </h3>
-
-          <textarea
-            id="admin-servicios"
-          ></textarea>
-
-        </div>
-
-        <!-- TARJETAS -->
-
-        <div class="card">
-
-          <h3>
-            Transfermovil
-          </h3>
-
-          <input
-            id="transfermovil"
-            type="text"
-          >
-
-          <h3>
-            Enzona
-          </h3>
-
-          <input
-            id="enzona"
-            type="text"
-          >
-
-          <h3>
-            Saldo móvil
-          </h3>
-
-          <input
-            id="saldo-movil"
-            type="text"
-          >
-
-          <button
-            onclick="saveConfig()"
-          >
-
-            Guardar Configuración
-
-          </button>
-
-        </div>
-
-      </div>
-
-      <!-- CITAS ADMIN -->
+      <!-- CITAS -->
 
       <div id="admin-citas"></div>
 
