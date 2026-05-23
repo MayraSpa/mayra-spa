@@ -1,203 +1,145 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
 
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta
-name="viewport"
-content="width=device-width, initial-scale=1.0"
->
+<title>Mayra Spa Estética Facial</title>
 
-<title>Mayra Spa</title>
-
-<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<script src="https://cdn.tailwindcss.com"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-<link
-rel="stylesheet"
-href="style.css"
->
+<link rel="stylesheet" href="style.css">
 
 </head>
 
 <body>
 
+<div class="container">
+
+<h1 class="title">
+Mayra Spa Estética Facial
+</h1>
+
 <!-- LOGIN -->
 
-<section id="auth-screen">
+<div id="auth-screen" class="card">
 
-<div class="auth-card">
-
-<h1>Mayra Spa</h1>
-
-<p>Estética Facial Premium</p>
+<h2>Iniciar Sesión / Registro</h2>
 
 <form id="auth-form">
 
 <input
-id="email"
 type="email"
+id="email"
 placeholder="Correo electrónico"
 required
 >
 
 <input
-id="password"
 type="password"
+id="password"
 placeholder="Contraseña"
 required
 >
 
 <button type="submit">
-
 Entrar / Registrarse
-
 </button>
 
 </form>
 
-</div>
+<a
+class="whatsapp-btn"
+target="_blank"
+href="https://wa.me/5359740626"
+>
 
-</section>
+WhatsApp Ayuda
+
+</a>
+
+</div>
 
 <!-- APP -->
 
-<div
-id="app"
-style="display:none;"
->
+<div id="app" style="display:none;">
 
-<!-- NAVBAR -->
-
-<nav class="navbar">
+<div class="topbar">
 
 <div>
-
-<h2>Mayra Spa</h2>
-
-<span>Estética Facial Premium</span>
-
+Usuario:
+<span id="logged-user"></span>
 </div>
 
-<div class="user-info">
-
-<span id="logged-user"></span>
-
 <button id="logout-btn">
-
-Salir
-
+Cerrar sesión
 </button>
 
 </div>
 
-</nav>
+<div class="grid">
 
-<!-- MAIN -->
+<!-- RESERVA -->
 
-<div class="main-grid">
+<div class="card">
 
-<!-- RESERVAR -->
-
-<section class="card">
-
-<h2 class="title">
-
-Reservar cita
-
-</h2>
+<h2>Reservar cita</h2>
 
 <form id="booking-form">
 
-<div class="field">
-
 <label>
-
-👤 Nombre completo
-
+Nombre completo
 </label>
 
 <input
+type="text"
 id="cliente"
-type="text"
-placeholder="Escribe tu nombre"
 required
 >
 
-</div>
-
-<div class="field">
-
 <label>
-
-📱 Número de teléfono
-
+Número de teléfono
 </label>
 
 <input
-id="telefono"
 type="text"
-placeholder="+53 55555555"
+id="telefono"
 required
 >
 
-</div>
-
-<div class="field">
-
 <label>
-
-✨ Tratamiento facial
-
+Servicio
 </label>
 
 <select id="servicio"></select>
 
-</div>
-
-<div class="field">
-
 <label>
-
-📅 Día de la cita
-
+Fecha
 </label>
 
 <input
-id="fecha"
 type="date"
+id="fecha"
 required
 >
 
-</div>
-
-<div class="field">
-
 <label>
-
-⏰ Turno disponible
-
+Horario
 </label>
 
 <select id="horario"></select>
 
-</div>
-
-<div class="field">
-
 <label>
-
-💳 Método de pago
-
+Método de pago
 </label>
 
 <select id="metodo-pago">
@@ -211,176 +153,45 @@ Enzona
 </option>
 
 <option>
-Saldo móvil
-</option>
-
-<option>
 Efectivo
 </option>
 
 </select>
 
-</div>
-
 <div id="payment-info"></div>
 
 <button type="submit">
-
-💜 Confirmar reserva
-
+Agendar cita
 </button>
 
 </form>
 
-</section>
+</div>
 
 <!-- MIS CITAS -->
 
-<section class="card">
+<div class="card">
 
-<h2 class="title">
-
-Mis citas
-
-</h2>
+<h2>Mis citas</h2>
 
 <div id="appointments-container"></div>
 
-</section>
+</div>
 
 </div>
 
 <!-- ADMIN -->
 
-<section
+<div
 id="admin-panel"
-class="admin-section"
 style="display:none;"
 >
 
-<h2 class="title">
-
-👑 Panel Administrador
-
-</h2>
-
-<div style="margin-bottom:20px;display:flex;gap:10px;flex-wrap:wrap;">
-
-<button onclick="exportAppointmentsExcel()">
-
-📥 Exportar Excel
-
-</button>
-
-<button onclick="exportAppointmentsPDF()">
-
-📄 Exportar PDF
-
-</button>
-
-</div>
-
-<!-- CONFIG -->
-
-<div class="config-grid">
-
 <div class="card">
 
-<h3>Servicios</h3>
+<h2>Panel Administrador</h2>
 
-<textarea id="admin-servicios"></textarea>
-
-</div>
-
-<div class="card">
-
-<h3>Horarios</h3>
-
-<textarea id="admin-horarios"></textarea>
-
-</div>
-
-<div class="card">
-
-<h3>Transfermovil</h3>
-
-<input id="transfermovil">
-
-<input
-id="telefono-transfermovil"
-placeholder="Número confirmación"
->
-
-<h3>Enzona</h3>
-
-<input id="enzona">
-
-<input
-id="telefono-enzona"
-placeholder="Número confirmación"
->
-
-<h3>Saldo móvil</h3>
-
-<input id="saldo-movil">
-
-<button onclick="saveConfig()">
-
-Guardar configuración
-
-</button>
-
-</div>
-
-</div>
-
-<!-- BLOQUEOS -->
-
-<div class="config-grid">
-
-<div class="card">
-
-<h3>Bloquear día</h3>
-
-<input
-type="date"
-id="bloqueo-fecha"
->
-
-<button onclick="blockFullDay()">
-
-Bloquear día
-
-</button>
-
-</div>
-
-<div class="card">
-
-<h3>Bloquear turno</h3>
-
-<input
-type="date"
-id="bloqueo-turno-fecha"
->
-
-<select
-id="bloqueo-turno-horario"
-></select>
-
-<button onclick="blockShift()">
-
-Bloquear turno
-
-</button>
-
-</div>
-
-</div>
-
-<!-- FILTROS -->
-
-<div class="admin-filters">
+<div class="filters">
 
 <button onclick="filterAppointments('Todas')">
 Todas
@@ -402,24 +213,126 @@ Canceladas
 
 <div id="admin-citas"></div>
 
-</section>
+</div>
+
+<!-- CONFIG -->
+
+<div class="card">
+
+<h2>Configuración</h2>
+
+<label>
+Horarios
+</label>
+
+<textarea
+id="admin-horarios"
+rows="5"
+></textarea>
+
+<label>
+Servicios
+</label>
+
+<textarea
+id="admin-servicios"
+rows="5"
+></textarea>
+
+<label>
+Tarjeta Transfermovil
+</label>
+
+<input
+type="text"
+id="transfermovil"
+>
+
+<label>
+Teléfono Transfermovil
+</label>
+
+<input
+type="text"
+id="telefono-transfermovil"
+>
+
+<label>
+Tarjeta Enzona
+</label>
+
+<input
+type="text"
+id="enzona"
+>
+
+<label>
+Teléfono Enzona
+</label>
+
+<input
+type="text"
+id="telefono-enzona"
+>
+
+<label>
+Saldo móvil
+</label>
+
+<input
+type="text"
+id="saldo-movil"
+>
+
+<button onclick="saveConfig()">
+Guardar configuración
+</button>
 
 </div>
 
-<!-- WHATSAPP -->
+<!-- EXPORTAR -->
 
-<a
-href="https://wa.me/5359740626?text=Hola%20Mayra%20Spa%20quiero%20información"
-class="whatsapp-btn"
-target="_blank"
+<div class="card">
+
+<h2>Exportar citas</h2>
+
+<label>
+Fecha inicio
+</label>
+
+<input
+type="date"
+id="fecha-inicio"
 >
 
-💬
+<label>
+Fecha final
+</label>
 
-</a>
+<input
+type="date"
+id="fecha-fin"
+>
+
+<button onclick="exportAppointmentsPDF()">
+Exportar PDF
+</button>
+
+<button onclick="exportAppointmentsExcel()">
+Exportar Excel
+</button>
+
+<button onclick="clearAppointments()">
+Limpiar citas de prueba
+</button>
+
+</div>
+
+</div>
+
+</div>
 
 <script src="app.js"></script>
 
 </body>
-
 </html>
