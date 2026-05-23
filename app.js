@@ -10,6 +10,8 @@ supabase.createClient(
   SUPABASE_KEY
 );
 
+// EMAILJS
+
 emailjs.init(
   "AhtH_YwiVgHubSmtd"
 );
@@ -20,40 +22,26 @@ const SERVICE_ID =
 const TEMPLATE_ID =
 "template_qe0djol";
 
+// TELEGRAM
+
+const BOT_TOKEN =
+"8637382666:AAFCS4IxrPtIsgRLEKdY39z3fBusDlgSqbs";
+
+const CHAT_ID =
+"999753868";
+
+// VARIABLES
+
 let currentUser = null;
+
 let config = null;
-let allAppointments = [];
+
 let isAdmin = false;
-async function sendTelegramNotification(text){
 
-  const BOT_TOKEN =
-  "8637382666:AAFCS4IxrPtIsgRLEKdY39z3fBusDlgSqbs";
+let allAppointments = [];
 
-  const CHAT_ID =
-  "999753868";
+// INICIO
 
-  const url =
-  `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
-
-  await fetch(url,{
-
-    method:"POST",
-
-    headers:{
-      "Content-Type":"application/json"
-    },
-
-    body:JSON.stringify({
-
-      chat_id:CHAT_ID,
-
-      text:text
-
-    })
-
-  });
-
-}
 checkSession();
 
 // SESIÓN
@@ -74,7 +62,7 @@ async function checkSession(){
 
 }
 
-// LOGIN
+// LOGIN / REGISTRO
 
 document
 .getElementById("auth-form")
@@ -90,16 +78,22 @@ document
 
   let result =
   await client.auth.signInWithPassword({
+
     email,
     password
+
   });
+
+  // SI NO EXISTE → REGISTRO
 
   if(result.error){
 
     result =
     await client.auth.signUp({
+
       email,
       password
+
     });
 
   }
@@ -135,6 +129,8 @@ async function openApp(){
   .getElementById("logged-user")
   .innerHTML =
   currentUser.email;
+
+  // ADMIN
 
   const adminCheck =
   await client
@@ -178,13 +174,16 @@ async function loadConfig(){
   .select("*")
   .single();
 
-  config = response.data;
+  config =
+  response.data;
 
   loadServices();
 
   updatePaymentInfo();
 
 }
+
+// SERVICIOS
 
 function loadServices(){
 
@@ -196,16 +195,20 @@ function loadServices(){
   config.servicios.forEach(s=>{
 
     servicio.innerHTML += `
+
       <option>
-        ${s.nombre} - ${s.precio}
+
+      ${s.nombre} - ${s.precio}
+
       </option>
+
     `;
 
   });
 
 }
 
-// HORARIOS DINÁMICOS
+// HORARIOS DISPONIBLES
 
 async function loadSchedules(){
 
@@ -223,6 +226,8 @@ async function loadSchedules(){
 
   }
 
+  // CITAS OCUPADAS
+
   const response =
   await client
   .from("citas")
@@ -232,6 +237,8 @@ async function loadSchedules(){
 
   const ocupados =
   response.data.map(c=>c.horario);
+
+  // MOSTRAR DISPONIBLES
 
   config.horarios.forEach(h=>{
 
@@ -249,13 +256,15 @@ async function loadSchedules(){
 
     horario.innerHTML = `
       <option>
-        No hay horarios disponibles
+      No hay horarios disponibles
       </option>
     `;
 
   }
 
 }
+
+// CAMBIO FECHA
 
 document
 .getElementById("fecha")
@@ -264,7 +273,7 @@ document
   loadSchedules
 );
 
-// PAGOS
+// INFO PAGO
 
 function updatePaymentInfo(){
 
@@ -279,12 +288,15 @@ function updatePaymentInfo(){
   if(metodo === "Transfermovil"){
 
     info.innerHTML = `
+
       <b>Tarjeta:</b>
       ${config.transfermovil}
+
       <br><br>
 
       <b>Confirmar al:</b>
       ${config.telefono_transfermovil}
+
     `;
 
   }
@@ -292,12 +304,15 @@ function updatePaymentInfo(){
   else if(metodo === "Enzona"){
 
     info.innerHTML = `
+
       <b>Tarjeta:</b>
       ${config.enzona}
+
       <br><br>
 
       <b>Confirmar al:</b>
       ${config.telefono_enzona}
+
     `;
 
   }
@@ -318,6 +333,33 @@ document
   updatePaymentInfo
 );
 
+// TELEGRAM
+
+async function sendTelegramNotification(text){
+
+  const url =
+  `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+
+  await fetch(url,{
+
+    method:"POST",
+
+    headers:{
+      "Content-Type":"application/json"
+    },
+
+    body:JSON.stringify({
+
+      chat_id:CHAT_ID,
+
+      text:text
+
+    })
+
+  });
+
+}
+
 // RESERVAR
 
 document
@@ -332,20 +374,7 @@ document
   const horario =
   document.getElementById("horario").value;
 
-  if(
-    horario ===
-    "No hay horarios disponibles"
-  ){
-
-    alert(
-      "No hay horarios libres"
-    );
-
-    return;
-
-  }
-
-  // VALIDAR ANTES DE PAGAR
+  // VALIDAR DISPONIBILIDAD
 
   const check =
   await client
@@ -358,21 +387,41 @@ document
   if(check.data.length > 0){
 
     alert(
-      "Ese horario ya fue reservado"
+      "Ese horario ya está ocupado"
     );
 
-    await loadSchedules();
+    loadSchedules();
 
     return;
 
   }
+
+  // PEDIR CÓDIGO
 
   const codigo =
   prompt(
     "Ingrese código de confirmación"
   );
 
-  if(!codigo) return;
+  if(!codigo){
+
+    return;
+
+  }
+
+  const cliente =
+  document.getElementById("cliente").value;
+
+  const telefono =
+  document.getElementById("telefono").value;
+
+  const servicio =
+  document.getElementById("servicio").value;
+
+  const metodo =
+  document.getElementById("metodo-pago").value;
+
+  // INSERTAR
 
   const insert =
   await client
@@ -382,24 +431,21 @@ document
     user_id:
     currentUser.id,
 
-    cliente:
-    document.getElementById("cliente").value,
+    cliente,
 
-    telefono:
-    document.getElementById("telefono").value,
+    telefono,
 
     email:
     currentUser.email,
 
-    servicio:
-    document.getElementById("servicio").value,
+    servicio,
 
     fecha,
 
     horario,
 
     metodo_pago:
-    document.getElementById("metodo-pago").value,
+    metodo,
 
     codigo_confirmacion:
     codigo,
@@ -416,6 +462,38 @@ document
     return;
 
   }
+
+  // TELEGRAM
+
+  await sendTelegramNotification(
+
+`📅 NUEVA CITA MAYRA SPA
+
+👤 Cliente:
+${cliente}
+
+📧 Email:
+${currentUser.email}
+
+📱 Teléfono:
+${telefono}
+
+✨ Servicio:
+${servicio}
+
+📅 Fecha:
+${fecha}
+
+⏰ Horario:
+${horario}
+
+💳 Método:
+${metodo}
+
+🔐 Código:
+${codigo}`
+
+);
 
   alert(
     "Cita enviada correctamente"
@@ -492,15 +570,15 @@ async function loadMyAppointments(){
 
       <div class="cita-card">
 
-        <h3>${cita.servicio}</h3>
+      <h3>${cita.servicio}</h3>
 
-        <p>📅 ${cita.fecha}</p>
+      <p>📅 ${cita.fecha}</p>
 
-        <p>⏰ ${cita.horario}</p>
+      <p>⏰ ${cita.horario}</p>
 
-        <div class="estado ${estadoClass}">
-          ${cita.estado}
-        </div>
+      <div class="estado ${estadoClass}">
+      ${cita.estado}
+      </div>
 
       </div>
 
@@ -510,7 +588,7 @@ async function loadMyAppointments(){
 
 }
 
-// ADMIN CITAS
+// TODAS LAS CITAS
 
 async function loadAllAppointments(){
 
@@ -531,6 +609,8 @@ async function loadAllAppointments(){
   );
 
 }
+
+// RENDER ADMIN
 
 function renderAdminAppointments(data){
 
@@ -570,53 +650,57 @@ function renderAdminAppointments(data){
 
       <div class="cita-card">
 
-        <h3>${cita.cliente}</h3>
+      <h3>${cita.cliente}</h3>
 
-        <p>📧 ${cita.email}</p>
+      <p>📧 ${cita.email}</p>
 
-        <p>📱 ${cita.telefono}</p>
+      <p>📱 ${cita.telefono}</p>
 
-        <p>✨ ${cita.servicio}</p>
+      <p>✨ ${cita.servicio}</p>
 
-        <p>📅 ${cita.fecha}</p>
+      <p>📅 ${cita.fecha}</p>
 
-        <p>⏰ ${cita.horario}</p>
+      <p>⏰ ${cita.horario}</p>
 
-        <div class="estado ${estadoClass}">
-          ${cita.estado}
-        </div>
+      <p>💳 ${cita.metodo_pago}</p>
 
-        <br><br>
+      <p>🔐 ${cita.codigo_confirmacion}</p>
 
-        <button
-        onclick="updateStatus(
-        ${cita.id},
-        'Confirmada',
-        '${cita.email}',
-        '${cita.servicio}',
-        '${cita.fecha}',
-        '${cita.horario}'
-        )">
+      <div class="estado ${estadoClass}">
+      ${cita.estado}
+      </div>
 
-          Confirmar
+      <br><br>
 
-        </button>
+      <button
+      onclick="updateStatus(
+      ${cita.id},
+      'Confirmada',
+      '${cita.email}',
+      '${cita.servicio}',
+      '${cita.fecha}',
+      '${cita.horario}'
+      )">
 
-        <br><br>
+      Confirmar
 
-        <button
-        onclick="updateStatus(
-        ${cita.id},
-        'Cancelada',
-        '${cita.email}',
-        '${cita.servicio}',
-        '${cita.fecha}',
-        '${cita.horario}'
-        )">
+      </button>
 
-          Cancelar
+      <br><br>
 
-        </button>
+      <button
+      onclick="updateStatus(
+      ${cita.id},
+      'Cancelada',
+      '${cita.email}',
+      '${cita.servicio}',
+      '${cita.fecha}',
+      '${cita.horario}'
+      )">
+
+      Cancelar
+
+      </button>
 
       </div>
 
@@ -625,6 +709,8 @@ function renderAdminAppointments(data){
   });
 
 }
+
+// FILTROS
 
 function filterAppointments(status){
 
@@ -665,6 +751,8 @@ async function updateStatus(
   .update({estado})
   .eq("id",id);
 
+  // EMAIL
+
   if(
     estado ===
     "Confirmada"
@@ -674,10 +762,15 @@ async function updateStatus(
       SERVICE_ID,
       TEMPLATE_ID,
       {
-        to_email: email,
+
+        to_email:email,
+
         servicio,
+
         fecha,
+
         hora
+
       }
     );
 
@@ -693,7 +786,7 @@ async function updateStatus(
 
 }
 
-// GUARDAR CONFIG
+// CONFIG ADMIN
 
 async function saveConfig(){
 
@@ -759,6 +852,8 @@ async function saveConfig(){
 
 }
 
+// CARGAR CONFIG ADMIN
+
 async function loadAdminConfig(){
 
   document
@@ -815,16 +910,68 @@ document
   }
 );
 
+// LIMPIAR CITAS
+
+async function clearAppointments(){
+
+  const confirmar =
+  confirm(
+    "¿Seguro que deseas borrar todas las citas?"
+  );
+
+  if(!confirmar) return;
+
+  await client
+  .from("citas")
+  .delete()
+  .neq("id",0);
+
+  alert(
+    "Citas eliminadas"
+  );
+
+  loadMyAppointments();
+
+  if(isAdmin){
+
+    loadAllAppointments();
+
+  }
+
+}
+
 // EXPORTAR EXCEL
 
 async function exportAppointmentsExcel(){
 
-  const response =
-  await client
+  const inicio =
+  document.getElementById("fecha-inicio").value;
+
+  const fin =
+  document.getElementById("fecha-fin").value;
+
+  let query =
+  client
   .from("citas")
   .select("*")
-  .eq("estado","Confirmada")
-  .order(
+  .eq("estado","Confirmada");
+
+  if(inicio){
+
+    query =
+    query.gte("fecha",inicio);
+
+  }
+
+  if(fin){
+
+    query =
+    query.lte("fecha",fin);
+
+  }
+
+  const response =
+  await query.order(
     "fecha",
     {ascending:true}
   );
@@ -867,12 +1014,34 @@ async function exportAppointmentsExcel(){
 
 async function exportAppointmentsPDF(){
 
-  const response =
-  await client
+  const inicio =
+  document.getElementById("fecha-inicio").value;
+
+  const fin =
+  document.getElementById("fecha-fin").value;
+
+  let query =
+  client
   .from("citas")
   .select("*")
-  .eq("estado","Confirmada")
-  .order(
+  .eq("estado","Confirmada");
+
+  if(inicio){
+
+    query =
+    query.gte("fecha",inicio);
+
+  }
+
+  if(fin){
+
+    query =
+    query.lte("fecha",fin);
+
+  }
+
+  const response =
+  await query.order(
     "fecha",
     {ascending:true}
   );
