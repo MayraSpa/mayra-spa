@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Mayra Spa Estética Facial</title>
+<title>Mayra Spa</title>
 
-<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="style.css">
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -17,23 +18,27 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-<link rel="stylesheet" href="style.css">
-
 </head>
 
 <body>
 
-<div class="container">
+<div class="bg"></div>
 
-<h1 class="title">
-Mayra Spa Estética Facial
-</h1>
+<div class="main-container">
+
+<div class="logo-area">
+
+<h1>Mayra Spa</h1>
+
+<p>Estética Facial Premium</p>
+
+</div>
 
 <!-- LOGIN -->
 
-<div id="auth-screen" class="card">
+<div id="auth-screen" class="glass-card auth-card">
 
-<h2>Iniciar Sesión / Registro</h2>
+<h2>Bienvenida</h2>
 
 <form id="auth-form">
 
@@ -58,9 +63,9 @@ Entrar / Registrarse
 </form>
 
 <a
-class="whatsapp-btn"
-target="_blank"
+class="help-btn"
 href="https://wa.me/5359740626"
+target="_blank"
 >
 
 WhatsApp Ayuda
@@ -73,10 +78,12 @@ WhatsApp Ayuda
 
 <div id="app" style="display:none;">
 
-<div class="topbar">
+<!-- TOPBAR -->
+
+<div class="topbar glass-card">
 
 <div>
-Usuario:
+👤 Usuario:
 <span id="logged-user"></span>
 </div>
 
@@ -86,45 +93,41 @@ Cerrar sesión
 
 </div>
 
+<!-- GRID -->
+
 <div class="grid">
 
-<!-- RESERVA -->
+<!-- RESERVAR -->
 
-<div class="card">
+<div class="glass-card">
 
-<h2>Reservar cita</h2>
+<h2>📅 Reservar cita</h2>
 
 <form id="booking-form">
 
-<label>
-Nombre completo
-</label>
+<label>Nombre completo</label>
 
 <input
 type="text"
 id="cliente"
+placeholder="Escribe tu nombre"
 required
 >
 
-<label>
-Número de teléfono
-</label>
+<label>Teléfono</label>
 
 <input
 type="text"
 id="telefono"
+placeholder="Número de teléfono"
 required
 >
 
-<label>
-Servicio
-</label>
+<label>Servicio</label>
 
 <select id="servicio"></select>
 
-<label>
-Fecha
-</label>
+<label>Fecha</label>
 
 <input
 type="date"
@@ -132,33 +135,23 @@ id="fecha"
 required
 >
 
-<label>
-Horario
-</label>
+<label>Horario</label>
 
 <select id="horario"></select>
 
-<label>
-Método de pago
-</label>
+<label>Método de pago</label>
 
 <select id="metodo-pago">
 
-<option>
-Transfermovil
-</option>
+<option>Transfermovil</option>
 
-<option>
-Enzona
-</option>
+<option>Enzona</option>
 
-<option>
-Efectivo
-</option>
+<option>Efectivo</option>
 
 </select>
 
-<div id="payment-info"></div>
+<div id="payment-info" class="payment-box"></div>
 
 <button type="submit">
 Agendar cita
@@ -168,11 +161,11 @@ Agendar cita
 
 </div>
 
-<!-- MIS CITAS -->
+<!-- CITAS -->
 
-<div class="card">
+<div class="glass-card">
 
-<h2>Mis citas</h2>
+<h2>📋 Mis citas</h2>
 
 <div id="appointments-container"></div>
 
@@ -187,9 +180,9 @@ id="admin-panel"
 style="display:none;"
 >
 
-<div class="card">
+<div class="glass-card">
 
-<h2>Panel Administrador</h2>
+<h2>⚙️ Panel Administrador</h2>
 
 <div class="filters">
 
@@ -217,67 +210,53 @@ Canceladas
 
 <!-- CONFIG -->
 
-<div class="card">
+<div class="glass-card">
 
-<h2>Configuración</h2>
+<h2>🛠 Configuración</h2>
 
-<label>
-Horarios
-</label>
+<label>Horarios</label>
 
 <textarea
 id="admin-horarios"
 rows="5"
 ></textarea>
 
-<label>
-Servicios
-</label>
+<label>Servicios</label>
 
 <textarea
 id="admin-servicios"
 rows="5"
 ></textarea>
 
-<label>
-Tarjeta Transfermovil
-</label>
+<label>Tarjeta Transfermovil</label>
 
 <input
 type="text"
 id="transfermovil"
 >
 
-<label>
-Teléfono Transfermovil
-</label>
+<label>Teléfono Transfermovil</label>
 
 <input
 type="text"
 id="telefono-transfermovil"
 >
 
-<label>
-Tarjeta Enzona
-</label>
+<label>Tarjeta Enzona</label>
 
 <input
 type="text"
 id="enzona"
 >
 
-<label>
-Teléfono Enzona
-</label>
+<label>Teléfono Enzona</label>
 
 <input
 type="text"
 id="telefono-enzona"
 >
 
-<label>
-Saldo móvil
-</label>
+<label>Saldo móvil</label>
 
 <input
 type="text"
@@ -292,22 +271,18 @@ Guardar configuración
 
 <!-- EXPORTAR -->
 
-<div class="card">
+<div class="glass-card">
 
-<h2>Exportar citas</h2>
+<h2>📄 Exportar citas</h2>
 
-<label>
-Fecha inicio
-</label>
+<label>Fecha inicio</label>
 
 <input
 type="date"
 id="fecha-inicio"
 >
 
-<label>
-Fecha final
-</label>
+<label>Fecha final</label>
 
 <input
 type="date"
@@ -323,7 +298,7 @@ Exportar Excel
 </button>
 
 <button onclick="clearAppointments()">
-Limpiar citas de prueba
+Limpiar citas
 </button>
 
 </div>
