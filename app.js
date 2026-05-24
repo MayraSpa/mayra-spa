@@ -1112,5 +1112,58 @@ async function exportAppointmentsPDF(){
   doc.save(
     "MayraSpa_Citas.pdf"
   );
+// PESTAÑAS CLIENTE
+
+function showTab(id,btn){
+
+document
+.querySelectorAll(".tab-content")
+.forEach(tab=>{
+
+tab.classList.remove("active-tab");
+
+});
+
+document
+.getElementById(id)
+.classList.add("active-tab");
+
+document
+.querySelectorAll(".tabs .tab-btn")
+.forEach(b=>{
+
+b.classList.remove("active");
+
+});
+
+btn.classList.add("active");
+
+}
+
+// PESTAÑAS ADMIN
+
+function showAdminTab(id,btn){
+
+document
+.querySelectorAll(".admin-content")
+.forEach(tab=>{
+
+tab.classList.remove("active-admin");
+
+});
+
+document
+.getElementById(id)
+.classList.add("active-admin");
+
+document
+.querySelectorAll(".admin-tabs .tab-btn")
+.forEach(b=>{
+
+b.classList.remove("active");
+
+});
+
+btn.classList.add("active");
 
 }
