@@ -4,58 +4,68 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
 "sb_publishable_ieNxKvgX7nTROGOmHNpBbw_GSTTJ9Os";
 
-const client = supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
+const client =
+supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
 );
 
 // EMAILJS
 
-emailjs.init("AhtH_YwiVgHubSmtd");
+emailjs.init(
+"AhtH_YwiVgHubSmtd"
+);
 
-const SERVICE_ID = "service_n6faw8i";
-const TEMPLATE_ID = "template_qe0djol";
+const SERVICE_ID =
+"service_n6faw8i";
+
+const TEMPLATE_ID =
+"template_qe0djol";
 
 // TELEGRAM
 
 const BOT_TOKEN =
 "8637382666:AAFCS4IxrPtIsgRLEKdY39z3fBusDlgSqbs";
 
-const CHAT_ID = "1262904304";
+const CHAT_ID =
+"1262904304";
 
 // VARIABLES
 
 let currentUser = null;
+
 let config = null;
+
 let isAdmin = false;
+
 let allAppointments = [];
 
 // INICIO
 
 window.addEventListener(
-  "load",
-  async ()=>{
+"load",
+async ()=>{
 
-    await checkSession();
+await checkSession();
 
-  }
+}
 );
 
 // SESION
 
 async function checkSession(){
 
-  const response =
-  await client.auth.getUser();
+const response =
+await client.auth.getUser();
 
-  if(response.data.user){
+if(response.data.user){
 
-    currentUser =
-    response.data.user;
+currentUser =
+response.data.user;
 
-    await openApp();
+await openApp();
 
-  }
+}
 
 }
 
@@ -118,11 +128,14 @@ await openApp();
 
 async function openApp(){
 
-document.getElementById("auth-screen").style.display = "none";
+document.getElementById("auth-screen")
+.style.display = "none";
 
-document.getElementById("app").style.display = "block";
+document.getElementById("app")
+.style.display = "block";
 
-document.getElementById("logged-user").innerHTML =
+document.getElementById("logged-user")
+.innerHTML =
 currentUser.email;
 
 // ADMIN
@@ -189,12 +202,14 @@ config.servicios.forEach(s=>{
 servicio.innerHTML += `
 
 <option>
-${s.nombre} - ${s.precio}
+${s.nombre} - ${s.precio} CUP
 </option>
 
 `;
 
 });
+
+updatePaymentInfo();
 
 }
 
@@ -261,10 +276,17 @@ No hay horarios disponibles
 
 }
 
-// PAGO
+// CALCULAR ADELANTO
 
 document
 .getElementById("metodo-pago")
+.addEventListener(
+"change",
+updatePaymentInfo
+);
+
+document
+.getElementById("servicio")
 .addEventListener(
 "change",
 updatePaymentInfo
@@ -275,8 +297,43 @@ function updatePaymentInfo(){
 const metodo =
 document.getElementById("metodo-pago").value;
 
+const servicio =
+document.getElementById("servicio").value;
+
 const info =
 document.getElementById("payment-info");
+
+const adelantoBox =
+document.getElementById("adelanto-box");
+
+// PRECIO
+
+const precio =
+parseInt(
+servicio.match(/\d+/)[0]
+);
+
+const porcentaje =
+config.porcentaje_adelanto || 20;
+
+const adelanto =
+Math.round(
+(precio * porcentaje) / 100
+);
+
+adelantoBox.innerHTML = `
+
+<b>Adelanto requerido:</b>
+
+${adelanto} CUP
+
+<br><br>
+
+<b>Total del servicio:</b>
+
+${precio} CUP
+
+`;
 
 if(metodo === "Transfermovil"){
 
@@ -337,6 +394,7 @@ headers:{
 body:JSON.stringify({
 
 chat_id:CHAT_ID,
+
 text:text
 
 })
@@ -406,27 +464,55 @@ document.getElementById("servicio").value;
 const metodo =
 document.getElementById("metodo-pago").value;
 
+// PRECIO
+
+const precio =
+parseInt(
+servicio.match(/\d+/)[0]
+);
+
+const porcentaje =
+config.porcentaje_adelanto || 20;
+
+const adelanto =
+Math.round(
+(precio * porcentaje) / 100
+);
+
+// INSERT
+
 const insert =
 await client
 .from("citas")
 .insert([{
 
-user_id:currentUser.id,
+user_id:
+currentUser.id,
 
 cliente,
 telefono,
 
-email:currentUser.email,
+email:
+currentUser.email,
 
 servicio,
 fecha,
 horario,
 
-metodo_pago:metodo,
+metodo_pago:
+metodo,
 
-codigo_confirmacion:codigo,
+codigo_confirmacion:
+codigo,
 
-estado:"Procesando"
+precio_total:
+precio,
+
+adelanto:
+adelanto,
+
+estado:
+"Procesando"
 
 }]);
 
@@ -437,6 +523,8 @@ alert(insert.error.message);
 return;
 
 }
+
+// TELEGRAM
 
 await sendTelegramNotification(
 
@@ -455,6 +543,10 @@ await sendTelegramNotification(
 ⏰ ${horario}
 
 💳 ${metodo}
+
+💵 Total: ${precio} CUP
+
+💰 Adelanto: ${adelanto} CUP
 
 🔐 ${codigo}`
 
@@ -490,8 +582,14 @@ const response =
 await client
 .from("citas")
 .select("*")
-.eq("user_id",currentUser.id)
-.order("id",{ascending:false});
+.eq(
+"user_id",
+currentUser.id
+)
+.order(
+"id",
+{ascending:false}
+);
 
 const container =
 document.getElementById(
@@ -502,17 +600,20 @@ container.innerHTML = "";
 
 response.data.forEach(cita=>{
 
-let estadoClass = "procesando";
+let estadoClass =
+"procesando";
 
 if(cita.estado === "Confirmada"){
 
-estadoClass = "confirmada";
+estadoClass =
+"confirmada";
 
 }
 
 if(cita.estado === "Cancelada"){
 
-estadoClass = "cancelada";
+estadoClass =
+"cancelada";
 
 }
 
@@ -526,6 +627,10 @@ container.innerHTML += `
 
 <p>⏰ ${cita.horario}</p>
 
+<p>💵 Total: ${cita.precio_total} CUP</p>
+
+<p>💰 Adelanto: ${cita.adelanto} CUP</p>
+
 <div class="estado ${estadoClass}">
 ${cita.estado}
 </div>
@@ -538,7 +643,7 @@ ${cita.estado}
 
 }
 
-// ADMIN
+// TODAS LAS CITAS
 
 async function loadAllAppointments(){
 
@@ -546,7 +651,10 @@ const response =
 await client
 .from("citas")
 .select("*")
-.order("id",{ascending:false});
+.order(
+"id",
+{ascending:false}
+);
 
 allAppointments =
 response.data;
@@ -557,6 +665,8 @@ allAppointments
 
 }
 
+// ADMIN
+
 function renderAdminAppointments(data){
 
 const admin =
@@ -566,17 +676,20 @@ admin.innerHTML = "";
 
 data.forEach(cita=>{
 
-let estadoClass = "procesando";
+let estadoClass =
+"procesando";
 
 if(cita.estado === "Confirmada"){
 
-estadoClass = "confirmada";
+estadoClass =
+"confirmada";
 
 }
 
 if(cita.estado === "Cancelada"){
 
-estadoClass = "cancelada";
+estadoClass =
+"cancelada";
 
 }
 
@@ -597,6 +710,10 @@ admin.innerHTML += `
 <p>⏰ ${cita.horario}</p>
 
 <p>💳 ${cita.metodo_pago}</p>
+
+<p>💵 Total: ${cita.precio_total} CUP</p>
+
+<p>💰 Adelanto: ${cita.adelanto} CUP</p>
 
 <p>🔐 ${cita.codigo_confirmacion}</p>
 
@@ -649,7 +766,7 @@ filtered
 
 }
 
-// ACTUALIZAR ESTADO
+// ESTADO
 
 async function updateStatus(
 id,
@@ -687,11 +804,13 @@ await loadAllAppointments();
 
 await loadMyAppointments();
 
-alert("Cita actualizada");
+alert(
+"Cita actualizada"
+);
 
 }
 
-// GUARDAR CONFIG
+// CONFIG ADMIN
 
 async function saveConfig(){
 
@@ -713,8 +832,11 @@ s.split("-");
 
 return {
 
-nombre:parts[0].trim(),
-precio:parts[1].trim()
+nombre:
+parts[0].trim(),
+
+precio:
+parts[1].trim()
 
 };
 
@@ -725,6 +847,7 @@ await client
 .update({
 
 horarios,
+
 servicios,
 
 transfermovil:
@@ -740,7 +863,12 @@ telefono_transfermovil:
 document.getElementById("telefono-transfermovil").value,
 
 telefono_enzona:
-document.getElementById("telefono-enzona").value
+document.getElementById("telefono-enzona").value,
+
+porcentaje_adelanto:
+parseInt(
+document.getElementById("porcentaje-adelanto").value
+)
 
 })
 .eq("id",1);
@@ -757,30 +885,39 @@ await loadConfig();
 
 async function loadAdminConfig(){
 
-document.getElementById("admin-horarios").value =
+document.getElementById("admin-horarios")
+.value =
 config.horarios.join("\n");
 
-document.getElementById("admin-servicios").value =
-config.servicios
-.map(s=>
+document.getElementById("admin-servicios")
+.value =
+config.servicios.map(s=>
 `${s.nombre} - ${s.precio}`
-)
-.join("\n");
+).join("\n");
 
-document.getElementById("transfermovil").value =
+document.getElementById("transfermovil")
+.value =
 config.transfermovil;
 
-document.getElementById("enzona").value =
+document.getElementById("enzona")
+.value =
 config.enzona;
 
-document.getElementById("saldo-movil").value =
+document.getElementById("saldo-movil")
+.value =
 config.saldo_movil;
 
-document.getElementById("telefono-transfermovil").value =
+document.getElementById("telefono-transfermovil")
+.value =
 config.telefono_transfermovil;
 
-document.getElementById("telefono-enzona").value =
+document.getElementById("telefono-enzona")
+.value =
 config.telefono_enzona;
+
+document.getElementById("porcentaje-adelanto")
+.value =
+config.porcentaje_adelanto || 20;
 
 }
 
@@ -796,7 +933,8 @@ await client.auth.signOut();
 
 location.reload();
 
-});
+}
+);
 
 // LIMPIAR
 
@@ -872,10 +1010,18 @@ const data =
 response.data.map(c=>({
 
 Fecha:c.fecha,
+
 Horario:c.horario,
+
 Cliente:c.cliente,
+
 Telefono:c.telefono,
-Servicio:c.servicio
+
+Servicio:c.servicio,
+
+Total:c.precio_total,
+
+Adelanto:c.adelanto
 
 }));
 
@@ -985,6 +1131,22 @@ doc.text(
 y
 );
 
+y += 7;
+
+doc.text(
+`Total: ${cita.precio_total} CUP`,
+15,
+y
+);
+
+y += 7;
+
+doc.text(
+`Adelanto: ${cita.adelanto} CUP`,
+15,
+y
+);
+
 y += 15;
 
 if(y > 270){
@@ -1003,7 +1165,7 @@ doc.save(
 
 }
 
-// PESTAÑAS CLIENTE
+// TABS CLIENTE
 
 function showTab(id,btn){
 
@@ -1031,7 +1193,7 @@ btn.classList.add("active");
 
 }
 
-// PESTAÑAS ADMIN
+// TABS ADMIN
 
 function showAdminTab(id,btn){
 
