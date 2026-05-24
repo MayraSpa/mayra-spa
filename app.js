@@ -18,7 +18,7 @@ const TEMPLATE_ID = "template_qe0djol";
 const BOT_TOKEN =
 "8637382666:AAFCS4IxrPtIsgRLEKdY39z3fBusDlgSqbs";
 
-const CHAT_ID = "999753868";
+const CHAT_ID = "1262904304";
 
 // VARIABLES
 
