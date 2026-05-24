@@ -40,11 +40,11 @@ let isAdmin = false;
 
 let allAppointments = [];
 
-// INICIO
+// INICIAR
 
 checkSession();
 
-// SESIÓN
+// VERIFICAR SESION
 
 async function checkSession(){
 
@@ -56,7 +56,7 @@ async function checkSession(){
     currentUser =
     response.data.user;
 
-    openApp();
+    await openApp();
 
   }
 
@@ -66,15 +66,23 @@ async function checkSession(){
 
 document
 .getElementById("auth-form")
-.addEventListener("submit", async function(e){
+.addEventListener(
+  "submit",
+  async function(e){
 
   e.preventDefault();
 
   const email =
-  document.getElementById("email").value;
+  document
+  .getElementById("email")
+  .value;
 
   const password =
-  document.getElementById("password").value;
+  document
+  .getElementById("password")
+  .value;
+
+  // LOGIN
 
   let result =
   await client.auth.signInWithPassword({
@@ -109,7 +117,7 @@ document
   currentUser =
   result.data.user;
 
-  openApp();
+  await openApp();
 
 });
 
@@ -188,7 +196,8 @@ async function loadConfig(){
 function loadServices(){
 
   const servicio =
-  document.getElementById("servicio");
+  document
+  .getElementById("servicio");
 
   servicio.innerHTML = "";
 
@@ -208,25 +217,26 @@ function loadServices(){
 
 }
 
-// HORARIOS DISPONIBLES
+// HORARIOS
 
 async function loadSchedules(){
 
   const horario =
-  document.getElementById("horario");
+  document
+  .getElementById("horario");
 
   horario.innerHTML = "";
 
   const fecha =
-  document.getElementById("fecha").value;
+  document
+  .getElementById("fecha")
+  .value;
 
   if(!fecha){
 
     return;
 
   }
-
-  // CITAS OCUPADAS
 
   const response =
   await client
@@ -237,8 +247,6 @@ async function loadSchedules(){
 
   const ocupados =
   response.data.map(c=>c.horario);
-
-  // MOSTRAR DISPONIBLES
 
   config.horarios.forEach(h=>{
 
@@ -264,8 +272,6 @@ async function loadSchedules(){
 
 }
 
-// CAMBIO FECHA
-
 document
 .getElementById("fecha")
 .addEventListener(
@@ -273,7 +279,7 @@ document
   loadSchedules
 );
 
-// INFO PAGO
+// PAGO
 
 function updatePaymentInfo(){
 
@@ -283,7 +289,8 @@ function updatePaymentInfo(){
   .value;
 
   const info =
-  document.getElementById("payment-info");
+  document
+  .getElementById("payment-info");
 
   if(metodo === "Transfermovil"){
 
@@ -364,17 +371,21 @@ async function sendTelegramNotification(text){
 
 document
 .getElementById("booking-form")
-.addEventListener("submit", async function(e){
+.addEventListener(
+  "submit",
+  async function(e){
 
   e.preventDefault();
 
   const fecha =
-  document.getElementById("fecha").value;
+  document
+  .getElementById("fecha")
+  .value;
 
   const horario =
-  document.getElementById("horario").value;
-
-  // VALIDAR DISPONIBILIDAD
+  document
+  .getElementById("horario")
+  .value;
 
   const check =
   await client
@@ -396,8 +407,6 @@ document
 
   }
 
-  // PEDIR CÓDIGO
-
   const codigo =
   prompt(
     "Ingrese código de confirmación"
@@ -410,18 +419,24 @@ document
   }
 
   const cliente =
-  document.getElementById("cliente").value;
+  document
+  .getElementById("cliente")
+  .value;
 
   const telefono =
-  document.getElementById("telefono").value;
+  document
+  .getElementById("telefono")
+  .value;
 
   const servicio =
-  document.getElementById("servicio").value;
+  document
+  .getElementById("servicio")
+  .value;
 
   const metodo =
-  document.getElementById("metodo-pago").value;
-
-  // INSERTAR
+  document
+  .getElementById("metodo-pago")
+  .value;
 
   const insert =
   await client
@@ -463,35 +478,25 @@ document
 
   }
 
-  // TELEGRAM
-
   await sendTelegramNotification(
 
-`📅 NUEVA CITA MAYRA SPA
+`📅 NUEVA CITA
 
-👤 Cliente:
-${cliente}
+👤 ${cliente}
 
-📧 Email:
-${currentUser.email}
+📧 ${currentUser.email}
 
-📱 Teléfono:
-${telefono}
+📱 ${telefono}
 
-✨ Servicio:
-${servicio}
+✨ ${servicio}
 
-📅 Fecha:
-${fecha}
+📅 ${fecha}
 
-⏰ Horario:
-${horario}
+⏰ ${horario}
 
-💳 Método:
-${metodo}
+💳 ${metodo}
 
-🔐 Código:
-${codigo}`
+🔐 ${codigo}`
 
 );
 
@@ -507,11 +512,11 @@ ${codigo}`
   .getElementById("horario")
   .innerHTML = "";
 
-  loadMyAppointments();
+  await loadMyAppointments();
 
   if(isAdmin){
 
-    loadAllAppointments();
+    await loadAllAppointments();
 
   }
 
@@ -535,7 +540,8 @@ async function loadMyAppointments(){
   );
 
   const container =
-  document.getElementById(
+  document
+  .getElementById(
     "appointments-container"
   );
 
@@ -546,20 +552,14 @@ async function loadMyAppointments(){
     let estadoClass =
     "procesando";
 
-    if(
-      cita.estado ===
-      "Confirmada"
-    ){
+    if(cita.estado === "Confirmada"){
 
       estadoClass =
       "confirmada";
 
     }
 
-    if(
-      cita.estado ===
-      "Cancelada"
-    ){
+    if(cita.estado === "Cancelada"){
 
       estadoClass =
       "cancelada";
@@ -615,9 +615,8 @@ async function loadAllAppointments(){
 function renderAdminAppointments(data){
 
   const admin =
-  document.getElementById(
-    "admin-citas"
-  );
+  document
+  .getElementById("admin-citas");
 
   admin.innerHTML = "";
 
@@ -626,20 +625,14 @@ function renderAdminAppointments(data){
     let estadoClass =
     "procesando";
 
-    if(
-      cita.estado ===
-      "Confirmada"
-    ){
+    if(cita.estado === "Confirmada"){
 
       estadoClass =
       "confirmada";
 
     }
 
-    if(
-      cita.estado ===
-      "Cancelada"
-    ){
+    if(cita.estado === "Cancelada"){
 
       estadoClass =
       "cancelada";
@@ -672,15 +665,7 @@ function renderAdminAppointments(data){
 
       <br><br>
 
-      <button
-      onclick="updateStatus(
-      ${cita.id},
-      'Confirmada',
-      '${cita.email}',
-      '${cita.servicio}',
-      '${cita.fecha}',
-      '${cita.horario}'
-      )">
+      <button onclick="updateStatus(${cita.id},'Confirmada','${cita.email}','${cita.servicio}','${cita.fecha}','${cita.horario}')">
 
       Confirmar
 
@@ -688,15 +673,7 @@ function renderAdminAppointments(data){
 
       <br><br>
 
-      <button
-      onclick="updateStatus(
-      ${cita.id},
-      'Cancelada',
-      '${cita.email}',
-      '${cita.servicio}',
-      '${cita.fecha}',
-      '${cita.horario}'
-      )">
+      <button onclick="updateStatus(${cita.id},'Cancelada','${cita.email}','${cita.servicio}','${cita.fecha}','${cita.horario}')">
 
       Cancelar
 
@@ -751,12 +728,7 @@ async function updateStatus(
   .update({estado})
   .eq("id",id);
 
-  // EMAIL
-
-  if(
-    estado ===
-    "Confirmada"
-  ){
+  if(estado === "Confirmada"){
 
     await emailjs.send(
       SERVICE_ID,
@@ -848,7 +820,7 @@ async function saveConfig(){
     "Configuración guardada"
   );
 
-  loadConfig();
+  await loadConfig();
 
 }
 
@@ -930,11 +902,11 @@ async function clearAppointments(){
     "Citas eliminadas"
   );
 
-  loadMyAppointments();
+  await loadMyAppointments();
 
   if(isAdmin){
 
-    loadAllAppointments();
+    await loadAllAppointments();
 
   }
 
@@ -1112,6 +1084,9 @@ async function exportAppointmentsPDF(){
   doc.save(
     "MayraSpa_Citas.pdf"
   );
+
+}
+
 // PESTAÑAS CLIENTE
 
 function showTab(id,btn){
