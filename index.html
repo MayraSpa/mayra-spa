@@ -4,6 +4,7 @@
 <head>
 
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Mayra Spa</title>
@@ -41,10 +42,12 @@
 <h3>📍 Nuestra ubicación</h3>
 
 <p>
+
 Carr. Central No.511,
 Reparto Virginia,
 Santa Clara,
 Villa Clara, Cuba
+
 </p>
 
 <a
@@ -124,7 +127,7 @@ Cerrar sesión
 
 <!-- CLIENT TABS -->
 
-<div class="tabs">
+<div class="tabs client-tabs">
 
 <button
 class="tab-btn active"
@@ -206,6 +209,12 @@ required
 </select>
 
 <div id="payment-info" class="payment-box"></div>
+
+<div id="adelanto-box" class="payment-box">
+
+Adelanto requerido: 0 CUP
+
+</div>
 
 <button type="submit">
 Agendar cita
@@ -360,6 +369,13 @@ id="enzona"
 <input
 type="text"
 id="telefono-enzona"
+>
+
+<label>Porcentaje adelanto (%)</label>
+
+<input
+type="number"
+id="porcentaje-adelanto"
 >
 
 <label>Saldo móvil</label>
