@@ -31,11 +31,14 @@
 <h1>Mayra Spa</h1>
 
 <p>Estética Facial Premium</p>
+
+</div>
+
+<!-- UBICACION -->
+
 <div class="location-box">
 
-<h3>
-📍 Nuestra ubicación
-</h3>
+<h3>📍 Nuestra ubicación</h3>
 
 <p>
 Carr. Central No.511,
@@ -54,7 +57,6 @@ Abrir en Google Maps
 
 </a>
 
-<iframe
 <iframe
 src="https://www.google.com/maps?q=Reparto+Virginia,+Santa+Clara,+Villa+Clara,+Cuba&output=embed"
 allowfullscreen=""
@@ -107,8 +109,6 @@ WhatsApp Ayuda
 
 <div id="app" style="display:none;">
 
-<!-- TOPBAR -->
-
 <div class="topbar glass-card">
 
 <div>
@@ -122,15 +122,40 @@ Cerrar sesión
 
 </div>
 
-<!-- GRID -->
+<!-- CLIENT TABS -->
 
-<div class="grid">
+<div class="tabs">
+
+<button
+class="tab-btn active"
+onclick="showTab('reservar-tab',this)"
+>
+
+📅 Reservar
+
+</button>
+
+<button
+class="tab-btn"
+onclick="showTab('citas-tab',this)"
+>
+
+📋 Mis citas
+
+</button>
+
+</div>
 
 <!-- RESERVAR -->
 
+<div
+id="reservar-tab"
+class="tab-content active-tab"
+>
+
 <div class="glass-card">
 
-<h2>📅 Reservar cita</h2>
+<h2>Reservar cita</h2>
 
 <form id="booking-form">
 
@@ -190,11 +215,18 @@ Agendar cita
 
 </div>
 
-<!-- CITAS -->
+</div>
+
+<!-- MIS CITAS -->
+
+<div
+id="citas-tab"
+class="tab-content"
+>
 
 <div class="glass-card">
 
-<h2>📋 Mis citas</h2>
+<h2>Mis citas</h2>
 
 <div id="appointments-container"></div>
 
@@ -209,9 +241,47 @@ id="admin-panel"
 style="display:none;"
 >
 
+<div class="tabs admin-tabs">
+
+<button
+class="tab-btn active"
+onclick="showAdminTab('solicitudes-tab',this)"
+>
+
+📋 Solicitudes
+
+</button>
+
+<button
+class="tab-btn"
+onclick="showAdminTab('config-tab',this)"
+>
+
+⚙️ Configuración
+
+</button>
+
+<button
+class="tab-btn"
+onclick="showAdminTab('exportar-tab',this)"
+>
+
+📄 Exportar
+
+</button>
+
+</div>
+
+<!-- SOLICITUDES -->
+
+<div
+id="solicitudes-tab"
+class="admin-content active-admin"
+>
+
 <div class="glass-card">
 
-<h2>⚙️ Panel Administrador</h2>
+<h2>Panel Administrador</h2>
 
 <div class="filters">
 
@@ -237,11 +307,18 @@ Canceladas
 
 </div>
 
+</div>
+
 <!-- CONFIG -->
+
+<div
+id="config-tab"
+class="admin-content"
+>
 
 <div class="glass-card">
 
-<h2>🛠 Configuración</h2>
+<h2>Configuración</h2>
 
 <label>Horarios</label>
 
@@ -298,11 +375,18 @@ Guardar configuración
 
 </div>
 
+</div>
+
 <!-- EXPORTAR -->
+
+<div
+id="exportar-tab"
+class="admin-content"
+>
 
 <div class="glass-card">
 
-<h2>📄 Exportar citas</h2>
+<h2>Exportar citas</h2>
 
 <label>Fecha inicio</label>
 
@@ -329,6 +413,8 @@ Exportar Excel
 <button onclick="clearAppointments()">
 Limpiar citas
 </button>
+
+</div>
 
 </div>
 
