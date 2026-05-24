@@ -141,16 +141,6 @@ font-size:18px;
 
 }
 
-.grid{
-
-display:grid;
-
-grid-template-columns:1fr 1fr;
-
-gap:25px;
-
-}
-
 h2{
 
 font-size:32px;
@@ -414,38 +404,60 @@ padding:12px 20px;
 
 }
 
-@media(max-width:900px){
+.tabs{
 
-.grid{
-
-grid-template-columns:1fr;
-
-}
-
-.logo-area h1{
-
-font-size:52px;
-
-}
-
-.logo-area p{
-
-font-size:18px;
-
-}
-
-.topbar{
-
-flex-direction:column;
+display:flex;
 
 gap:15px;
 
-text-align:center;
+margin-bottom:25px;
+
+flex-wrap:wrap;
 
 }
+
+.tab-btn{
+
+width:auto;
+
+padding:14px 22px;
+
+background:
+rgba(255,255,255,0.08);
+
+border:
+1px solid rgba(255,255,255,0.1);
+
+}
+
+.tab-btn.active{
+
+background:
+linear-gradient(
+90deg,
+#7c3aed,
+#a855f7
+);
+
+}
+
+.tab-content,
+.admin-content{
+
+display:none;
+
+}
+
+.active-tab,
+.active-admin{
+
+display:block;
+
+}
+
 .location-box{
 
-margin-top:25px;
+margin-bottom:25px;
 
 padding:25px;
 
@@ -531,5 +543,37 @@ transform:translateY(-2px);
 
 box-shadow:
 0 10px 25px rgba(168,85,247,0.4);
+
+}
+
+@media(max-width:900px){
+
+.logo-area h1{
+
+font-size:52px;
+
+}
+
+.logo-area p{
+
+font-size:18px;
+
+}
+
+.topbar{
+
+flex-direction:column;
+
+gap:15px;
+
+text-align:center;
+
+}
+
+.tabs{
+
+justify-content:center;
+
+}
 
 }
