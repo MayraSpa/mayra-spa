@@ -689,7 +689,10 @@ await client
 .from("citas")
 .update({
 
-estado:"Cancelada"
+estado:"Cancelada",
+
+fecha_cancelacion:
+new Date().toISOString()
 
 })
 .eq("id",id);
