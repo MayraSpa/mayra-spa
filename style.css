@@ -7,41 +7,37 @@ font-family:Arial, Helvetica, sans-serif;
 
 body{
 
-background:#120018;
-color:white;
+background:#120818;
 min-height:100vh;
+color:white;
 overflow-x:hidden;
-padding:20px;
 
 }
 
 .bg{
 
 position:fixed;
-inset:0;
-
+width:100%;
+height:100%;
 background:
 linear-gradient(
 135deg,
-#3d0066,
-#120018,
-#220033
+#2b0a3d,
+#120818
 );
 
 z-index:-1;
 
 }
 
-/* CONTENEDOR */
-
 .main-container{
 
+width:100%;
 max-width:1200px;
 margin:auto;
+padding:20px;
 
 }
-
-/* LOGO */
 
 .logo-area{
 
@@ -53,23 +49,16 @@ margin-bottom:30px;
 .logo-area h1{
 
 font-size:50px;
-font-weight:bold;
+color:#ff9ff3;
 
-background:linear-gradient(
-90deg,
-#ff66ff,
-#cc99ff
-);
-
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
+margin-bottom:10px;
 
 }
 
 .logo-area p{
 
-opacity:0.8;
-margin-top:10px;
+color:#e0c3fc;
+font-size:18px;
 
 }
 
@@ -79,9 +68,9 @@ margin-top:10px;
 
 background:rgba(255,255,255,0.08);
 
-backdrop-filter:blur(12px);
+backdrop-filter:blur(15px);
 
-border:1px solid rgba(255,255,255,0.15);
+border:1px solid rgba(255,255,255,0.1);
 
 border-radius:25px;
 
@@ -107,12 +96,9 @@ margin:auto;
 
 text-align:center;
 margin-bottom:20px;
-
-font-size:32px;
+color:#ffb6ff;
 
 }
-
-/* INPUTS */
 
 input,
 select,
@@ -129,76 +115,65 @@ border:none;
 
 border-radius:14px;
 
-background:rgba(255,255,255,0.12);
+background:rgba(255,255,255,0.15);
 
 color:white;
 
-font-size:16px;
+font-size:15px;
 
 outline:none;
-
-transition:0.3s;
 
 }
 
 input::placeholder,
 textarea::placeholder{
 
-color:rgba(255,255,255,0.6);
+color:#ddd;
 
 }
 
-input:focus,
-select:focus,
-textarea:focus{
+select option{
 
-background:rgba(255,255,255,0.18);
-
-border:1px solid #d966ff;
+color:black;
 
 }
-
-/* LABELS */
 
 label{
 
-font-weight:bold;
 display:block;
-margin-top:10px;
+
 margin-bottom:5px;
+
+color:#ffd6ff;
+
+font-weight:bold;
 
 }
 
-/* BUTTONS */
+button{
 
-button,
-.map-btn,
-.help-btn{
+width:100%;
 
-display:inline-block;
-
-background:
-linear-gradient(
-90deg,
-#b300ff,
-#ff4dff
-);
-
-color:white;
-
-padding:14px 20px;
+padding:14px;
 
 border:none;
 
 border-radius:14px;
 
-cursor:pointer;
+background:
+linear-gradient(
+135deg,
+#d633ff,
+#7b2ff7
+);
+
+color:white;
 
 font-size:16px;
 
 font-weight:bold;
 
-text-decoration:none;
+cursor:pointer;
 
 transition:0.3s;
 
@@ -206,11 +181,9 @@ margin-top:10px;
 
 }
 
-button:hover,
-.map-btn:hover,
-.help-btn:hover{
+button:hover{
 
-transform:translateY(-2px);
+transform:scale(1.02);
 
 opacity:0.9;
 
@@ -223,11 +196,14 @@ opacity:0.9;
 display:flex;
 justify-content:space-between;
 align-items:center;
-
 margin-bottom:20px;
 
-flex-wrap:wrap;
-gap:10px;
+}
+
+#logged-user{
+
+color:#ffb6ff;
+font-weight:bold;
 
 }
 
@@ -237,18 +213,18 @@ gap:10px;
 
 display:flex;
 gap:10px;
-
 margin-bottom:20px;
-
 flex-wrap:wrap;
 
 }
 
 .tab-btn{
 
+flex:1;
+
 background:rgba(255,255,255,0.08);
 
-border:1px solid rgba(255,255,255,0.15);
+border:1px solid rgba(255,255,255,0.1);
 
 }
 
@@ -256,23 +232,31 @@ border:1px solid rgba(255,255,255,0.15);
 
 background:
 linear-gradient(
-90deg,
-#cc00ff,
-#ff66ff
+135deg,
+#d633ff,
+#7b2ff7
 );
 
 }
 
-/* TABS CONTENT */
+.tab-content{
 
-.tab-content,
+display:none;
+
+}
+
+.active-tab{
+
+display:block;
+
+}
+
 .admin-content{
 
 display:none;
 
 }
 
-.active-tab,
 .active-admin{
 
 display:block;
@@ -285,15 +269,15 @@ display:block;
 
 background:rgba(255,255,255,0.08);
 
-padding:18px;
+padding:15px;
 
-border-radius:16px;
+border-radius:15px;
 
 margin-bottom:15px;
 
-line-height:1.8;
+line-height:1.7;
 
-border:1px solid rgba(255,255,255,0.1);
+border:1px solid rgba(255,255,255,0.08);
 
 }
 
@@ -301,41 +285,30 @@ border:1px solid rgba(255,255,255,0.1);
 
 .cita-card{
 
-background:rgba(255,255,255,0.07);
+background:rgba(255,255,255,0.06);
 
 padding:20px;
 
-border-radius:20px;
+border-radius:18px;
 
-margin-top:15px;
+margin-bottom:20px;
 
 border:1px solid rgba(255,255,255,0.08);
-
-transition:0.3s;
-
-}
-
-.cita-card:hover{
-
-transform:translateY(-3px);
-
-background:rgba(255,255,255,0.09);
 
 }
 
 .cita-card h3{
 
+color:#ffb6ff;
 margin-bottom:10px;
-
-color:#ff99ff;
 
 }
 
 .cita-card p{
 
-margin:6px 0;
+margin-bottom:8px;
 
-opacity:0.95;
+color:#f1f1f1;
 
 }
 
@@ -343,13 +316,11 @@ opacity:0.95;
 
 .estado{
 
-display:inline-block;
-
-padding:8px 14px;
+padding:10px;
 
 border-radius:12px;
 
-font-size:14px;
+text-align:center;
 
 font-weight:bold;
 
@@ -359,19 +330,19 @@ margin-top:10px;
 
 .confirmada{
 
-background:#00aa66;
-
-}
-
-.procesando{
-
-background:#ff9900;
+background:#1faa59;
 
 }
 
 .cancelada{
 
-background:#cc3333;
+background:#ff4d6d;
+
+}
+
+.procesando{
+
+background:#ff9f1c;
 
 }
 
@@ -381,18 +352,44 @@ background:#cc3333;
 
 display:flex;
 gap:10px;
-
 flex-wrap:wrap;
-
 margin-bottom:20px;
 
 }
 
-/* MAPA */
+.filters button{
+
+flex:1;
+
+}
+
+/* UBICACION */
 
 .location-box{
 
+background:rgba(255,255,255,0.08);
+
+padding:25px;
+
+border-radius:25px;
+
 margin-bottom:25px;
+
+border:1px solid rgba(255,255,255,0.1);
+
+}
+
+.location-box h3{
+
+margin-bottom:15px;
+color:#ffb6ff;
+
+}
+
+.location-box p{
+
+line-height:1.6;
+margin-bottom:20px;
 
 }
 
@@ -405,37 +402,107 @@ border:none;
 
 border-radius:20px;
 
+margin-top:20px;
+
+}
+
+.map-btn{
+
+display:inline-block;
+
+padding:12px 20px;
+
+border-radius:14px;
+
+background:
+linear-gradient(
+135deg,
+#d633ff,
+#7b2ff7
+);
+
+color:white;
+
+text-decoration:none;
+
+font-weight:bold;
+
+}
+
+/* HELP */
+
+.help-btn{
+
+display:block;
+
+text-align:center;
+
+margin-top:20px;
+
+padding:14px;
+
+border-radius:14px;
+
+background:#25D366;
+
+color:white;
+
+text-decoration:none;
+
+font-weight:bold;
+
+}
+
+/* BOTON CANCELAR */
+
+.cancel-btn{
+
+width:100%;
+
+padding:12px;
+
+border:none;
+
+border-radius:14px;
+
+background:#ff4d6d;
+
+color:white;
+
+font-size:15px;
+
+font-weight:bold;
+
+cursor:pointer;
+
+transition:0.3s;
+
 margin-top:15px;
 
 }
 
-/* LINKS */
+.cancel-btn:hover{
 
-a{
+transform:scale(1.03);
 
-color:#ff99ff;
+opacity:0.9;
 
 }
 
-/* MOBILE */
+/* RESPONSIVE */
 
 @media(max-width:768px){
 
 .logo-area h1{
 
-font-size:36px;
+font-size:38px;
 
 }
 
-.glass-card{
+.topbar{
 
-padding:18px;
-
-}
-
-button{
-
-width:100%;
+flex-direction:column;
+gap:15px;
 
 }
 
@@ -445,22 +512,9 @@ flex-direction:column;
 
 }
 
-.tab-btn{
+button{
 
-width:100%;
-
-}
-
-.topbar{
-
-flex-direction:column;
-align-items:flex-start;
-
-}
-
-.location-box iframe{
-
-height:220px;
+font-size:15px;
 
 }
 
