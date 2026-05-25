@@ -272,7 +272,6 @@ No hay horarios disponibles
 }
 
 }
-
 // CALCULAR ADELANTO
 
 document
@@ -302,6 +301,12 @@ document.getElementById("payment-info");
 
 const adelantoBox =
 document.getElementById("adelanto-box");
+
+if(!servicio){
+
+return;
+
+}
 
 // PRECIO
 
@@ -399,6 +404,7 @@ text:text
 });
 
 }
+
 // RESERVAR
 
 document
@@ -569,7 +575,6 @@ await loadAllAppointments();
 }
 
 });
-
 // MIS CITAS
 
 async function loadMyAppointments(){
@@ -630,6 +635,44 @@ container.innerHTML += `
 <div class="estado ${estadoClass}">
 ${cita.estado}
 </div>
+
+${
+cita.fecha_cancelacion
+?
+
+`
+
+<p>
+❌ Cancelada:
+${new Date(cita.fecha_cancelacion)
+.toLocaleString()}
+</p>
+
+`
+
+:
+
+""
+
+}
+
+${
+cita.devolucion
+?
+
+`
+
+<p>
+💸 Adelanto devuelto
+</p>
+
+`
+
+:
+
+""
+
+}
 
 ${
 cita.estado !== "Cancelada"
@@ -784,6 +827,7 @@ admin.innerHTML += `
 <p>💰 Adelanto: ${cita.adelanto} CUP</p>
 
 <p>🔐 ${cita.codigo_confirmacion}</p>
+
 ${
 cita.fecha_cancelacion
 ?
@@ -795,31 +839,6 @@ cita.fecha_cancelacion
 ${new Date(cita.fecha_cancelacion)
 .toLocaleString()}
 </p>
-
-`
-
-:
-
-""
-
-}
-
-${
-cita.estado === "Cancelada"
-&& !cita.devolucion
-?
-
-`
-
-<br>
-
-<button
-onclick="markRefund(${cita.id},'${cita.email}')"
->
-
-Marcar devolución
-
-</button>
 
 `
 
@@ -863,6 +882,31 @@ Confirmar
 Cancelar
 </button>
 
+${
+cita.estado === "Cancelada"
+&& !cita.devolucion
+?
+
+`
+
+<br><br>
+
+<button
+onclick="markRefund(${cita.id},'${cita.email}')"
+>
+
+Marcar devolución
+
+</button>
+
+`
+
+:
+
+""
+
+}
+
 </div>
 
 `;
@@ -898,44 +942,6 @@ filtered
 // ACTUALIZAR ESTADO
 
 async function updateStatus(
-  // MARCAR DEVOLUCION
-
-async function markRefund(id,email){
-
-await client
-.from("citas")
-.update({
-
-devolucion:true
-
-})
-.eq("id",id);
-
-// EMAIL
-
-await emailjs.send(
-SERVICE_ID,
-TEMPLATE_ID,
-{
-
-to_email:email,
-
-servicio:"Devolución procesada",
-
-fecha:"",
-
-hora:""
-
-}
-);
-
-alert(
-"Devolución marcada"
-);
-
-await loadAllAppointments();
-
-}
 id,
 estado,
 email,
@@ -949,7 +955,7 @@ await client
 .update({estado})
 .eq("id",id);
 
-// EMAIL
+// EMAIL CONFIRMACION
 
 if(estado === "Confirmada"){
 
@@ -976,6 +982,45 @@ await loadMyAppointments();
 alert(
 "Cita actualizada"
 );
+
+}
+
+// MARCAR DEVOLUCION
+
+async function markRefund(id,email){
+
+await client
+.from("citas")
+.update({
+
+devolucion:true
+
+})
+.eq("id",id);
+
+// EMAIL DEVOLUCION
+
+await emailjs.send(
+SERVICE_ID,
+TEMPLATE_ID,
+{
+
+to_email:email,
+
+servicio:"Devolución procesada",
+
+fecha:"",
+
+hora:""
+
+}
+);
+
+alert(
+"Devolución marcada"
+);
+
+await loadAllAppointments();
 
 }
 
