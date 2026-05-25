@@ -33,11 +33,8 @@ const CHAT_ID =
 // VARIABLES
 
 let currentUser = null;
-
 let config = null;
-
 let isAdmin = false;
-
 let allAppointments = [];
 
 // INICIO
@@ -402,7 +399,6 @@ text:text
 });
 
 }
-
 // RESERVAR
 
 document
@@ -635,11 +631,80 @@ container.innerHTML += `
 ${cita.estado}
 </div>
 
+${
+cita.estado !== "Cancelada"
+?
+
+`
+
+<br>
+
+<button
+class="cancel-btn"
+onclick="cancelAppointment(${cita.id})"
+>
+
+Cancelar cita
+
+</button>
+
+`
+
+:
+
+""
+
+}
+
 </div>
 
 `;
 
 });
+
+}
+
+// CANCELAR CITA CLIENTE
+
+async function cancelAppointment(id){
+
+const confirmar =
+confirm(
+
+`⚠️ IMPORTANTE
+
+Si cancela la cita con menos de 72 horas de anticipación NO se devuelve el adelanto.
+
+¿Desea cancelar la cita?`
+
+);
+
+if(!confirmar){
+
+return;
+
+}
+
+await client
+.from("citas")
+.update({
+
+estado:"Cancelada"
+
+})
+.eq("id",id);
+
+alert(
+"Cita cancelada"
+);
+
+await loadMyAppointments();
+
+if(isAdmin){
+
+await loadAllAppointments();
+
+}
 
 }
 
@@ -740,7 +805,6 @@ Cancelar
 });
 
 }
-
 // FILTROS
 
 function filterAppointments(status){
@@ -766,7 +830,7 @@ filtered
 
 }
 
-// ESTADO
+// ACTUALIZAR ESTADO
 
 async function updateStatus(
 id,
@@ -781,6 +845,8 @@ await client
 .from("citas")
 .update({estado})
 .eq("id",id);
+
+// EMAIL
 
 if(estado === "Confirmada"){
 
@@ -810,7 +876,7 @@ alert(
 
 }
 
-// CONFIG ADMIN
+// GUARDAR CONFIG
 
 async function saveConfig(){
 
@@ -881,7 +947,7 @@ await loadConfig();
 
 }
 
-// CARGAR CONFIG
+// CARGAR CONFIG ADMIN
 
 async function loadAdminConfig(){
 
@@ -936,7 +1002,7 @@ location.reload();
 }
 );
 
-// LIMPIAR
+// LIMPIAR CITAS
 
 async function clearAppointments(){
 
@@ -970,7 +1036,7 @@ await loadAllAppointments();
 
 }
 
-// EXCEL
+// EXPORTAR EXCEL
 
 async function exportAppointmentsExcel(){
 
@@ -1044,7 +1110,7 @@ workbook,
 
 }
 
-// PDF
+// EXPORTAR PDF
 
 async function exportAppointmentsPDF(){
 
