@@ -2,443 +2,165 @@
 <html lang="es">
 
 <head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Mayra Spa</title>
-
-<link rel="stylesheet" href="style.css">
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mayra Spa</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 
 <body>
-
-<div class="bg"></div>
-
-<div class="main-container">
-
-<div class="logo-area">
-
-<h1>Mayra Spa</h1>
-
-<p>Estética Facial Premium</p>
-
-</div>
-
-<!-- UBICACION -->
-
-<div class="location-box">
-
-<h3>📍 Nuestra ubicación</h3>
-
-<p>
-
-Carr. Central No.511,
-Reparto Virginia,
-Santa Clara,
-Villa Clara, Cuba
-
-</p>
-
-<a
-href="https://maps.app.goo.gl/EEqnQ3pR5KdUDXHj6"
-target="_blank"
-class="map-btn"
->
-
-Abrir en Google Maps
-
-</a>
-
-<iframe
-src="https://www.google.com/maps?q=Reparto+Virginia,+Santa+Clara,+Villa+Clara,+Cuba&output=embed"
-allowfullscreen=""
-loading="lazy">
-</iframe>
-
-</div>
-
-<!-- LOGIN -->
-
-<div id="auth-screen" class="glass-card auth-card">
-
-<h2>Bienvenida</h2>
-
-<form id="auth-form">
-
-<input
-type="email"
-id="email"
-placeholder="Correo electrónico"
-required
->
-
-<input
-type="password"
-id="password"
-placeholder="Contraseña"
-required
->
-
-<button type="submit">
-Entrar / Registrarse
-</button>
-
-</form>
-
-<a
-class="help-btn"
-href="https://wa.me/5359740626"
-target="_blank"
->
-
-WhatsApp Ayuda
-
-</a>
-
-</div>
-
-<!-- APP -->
-
-<div id="app" style="display:none;">
-
-<div class="topbar glass-card">
-
-<div>
-👤 Usuario:
-<span id="logged-user"></span>
-</div>
-
-<button id="logout-btn">
-Cerrar sesión
-</button>
-
-</div>
-
-<!-- CLIENT TABS -->
-
-<div class="tabs client-tabs">
-
-<button
-class="tab-btn active"
-onclick="showTab('reservar-tab',this)"
->
-
-📅 Reservar
-
-</button>
-
-<button
-class="tab-btn"
-onclick="showTab('citas-tab',this)"
->
-
-📋 Mis citas
-
-</button>
-
-</div>
-
-<!-- RESERVAR -->
-
-<div
-id="reservar-tab"
-class="tab-content active-tab"
->
-
-<div class="glass-card">
-
-<h2>Reservar cita</h2>
-
-<form id="booking-form">
-
-<label>Nombre completo</label>
-
-<input
-type="text"
-id="cliente"
-placeholder="Escribe tu nombre"
-required
->
-
-<label>Teléfono</label>
-
-<input
-type="text"
-id="telefono"
-placeholder="Número de teléfono"
-required
->
-
-<label>Servicio</label>
-
-<select id="servicio"></select>
-
-<label>Fecha</label>
-
-<input
-type="date"
-id="fecha"
-required
->
-
-<label>Horario</label>
-
-<select id="horario"></select>
-
-<label>Método de pago</label>
-
-<select id="metodo-pago">
-
-<option>Transfermovil</option>
-
-<option>Enzona</option>
-
-<option>Efectivo</option>
-
-</select>
-
-<div id="payment-info" class="payment-box"></div>
-
-<div id="adelanto-box" class="payment-box">
-
-Adelanto requerido: 0 CUP
-
-</div>
-
-<button type="submit">
-Agendar cita
-</button>
-
-</form>
-
-</div>
-
-</div>
-
-<!-- MIS CITAS -->
-
-<div
-id="citas-tab"
-class="tab-content"
->
-
-<div class="glass-card">
-
-<h2>Mis citas</h2>
-
-<div id="appointments-container"></div>
-
-</div>
-
-</div>
-
-<!-- ADMIN -->
-
-<div
-id="admin-panel"
-style="display:none;"
->
-
-<div class="tabs admin-tabs">
-
-<button
-class="tab-btn active"
-onclick="showAdminTab('solicitudes-tab',this)"
->
-
-📋 Solicitudes
-
-</button>
-
-<button
-class="tab-btn"
-onclick="showAdminTab('config-tab',this)"
->
-
-⚙️ Configuración
-
-</button>
-
-<button
-class="tab-btn"
-onclick="showAdminTab('exportar-tab',this)"
->
-
-📄 Exportar
-
-</button>
-
-</div>
-
-<!-- SOLICITUDES -->
-
-<div
-id="solicitudes-tab"
-class="admin-content active-admin"
->
-
-<div class="glass-card">
-
-<h2>Panel Administrador</h2>
-
-<div class="filters">
-
-<button onclick="filterAppointments('Todas')">
-Todas
-</button>
-
-<button onclick="filterAppointments('Procesando')">
-Procesando
-</button>
-
-<button onclick="filterAppointments('Confirmada')">
-Confirmadas
-</button>
-
-<button onclick="filterAppointments('Cancelada')">
-Canceladas
-</button>
-
-</div>
-
-<div id="admin-citas"></div>
-
-</div>
-
-</div>
-
-<!-- CONFIG -->
-
-<div
-id="config-tab"
-class="admin-content"
->
-
-<div class="glass-card">
-
-<h2>Configuración</h2>
-
-<label>Horarios</label>
-
-<textarea
-id="admin-horarios"
-rows="5"
-></textarea>
-
-<label>Servicios</label>
-
-<textarea
-id="admin-servicios"
-rows="5"
-></textarea>
-
-<label>Tarjeta Transfermovil</label>
-
-<input
-type="text"
-id="transfermovil"
->
-
-<label>Teléfono Transfermovil</label>
-
-<input
-type="text"
-id="telefono-transfermovil"
->
-
-<label>Tarjeta Enzona</label>
-
-<input
-type="text"
-id="enzona"
->
-
-<label>Teléfono Enzona</label>
-
-<input
-type="text"
-id="telefono-enzona"
->
-
-<label>Porcentaje adelanto (%)</label>
-
-<input
-type="number"
-id="porcentaje-adelanto"
->
-
-<label>Saldo móvil</label>
-
-<input
-type="text"
-id="saldo-movil"
->
-
-<button onclick="saveConfig()">
-Guardar configuración
-</button>
-
-</div>
-
-</div>
-
-<!-- EXPORTAR -->
-
-<div
-id="exportar-tab"
-class="admin-content"
->
-
-<div class="glass-card">
-
-<h2>Exportar citas</h2>
-
-<label>Fecha inicio</label>
-
-<input
-type="date"
-id="fecha-inicio"
->
-
-<label>Fecha final</label>
-
-<input
-type="date"
-id="fecha-fin"
->
-
-<button onclick="exportAppointmentsPDF()">
-Exportar PDF
-</button>
-
-<button onclick="exportAppointmentsExcel()">
-Exportar Excel
-</button>
-
-<button onclick="clearAppointments()">
-Limpiar citas
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-<script src="app.js"></script>
-
+    <div class="bg"></div>
+    <div class="main-container">
+
+        <div class="logo-area">
+            <h1>Mayra Spa</h1>
+            <p>Estética Facial Premium</p>
+        </div>
+
+        <div class="location-box">
+            <h3>📍 Nuestra ubicación</h3>
+            <p>Carr. Central No.511, Reparto Virginia, Santa Clara, Villa Clara, Cuba</p>
+            <a href="https://maps.app.goo.gl/EEqnQ3pR5KdUDXHj6" target="_blank" class="map-btn">
+                Abrir en Google Maps
+            </a>
+            <iframe src="https://www.google.com/maps?q=Reparto+Virginia,+Santa+Clara,+Villa+Clara,+Cuba&output=embed" allowfullscreen="" loading="lazy"></iframe>
+        </div>
+
+        <div id="auth-screen" class="glass-card auth-card">
+            <h2>Bienvenida</h2>
+            <form id="auth-form">
+                <input type="email" id="email" placeholder="Correo electrónico" required>
+                <input type="password" id="password" placeholder="Contraseña" required>
+                <button type="submit">Entrar / Registrarse</button>
+            </form>
+            <a class="help-btn" href="https://wa.me/5359740626" target="_blank">WhatsApp Ayuda</a>
+        </div>
+
+        <div id="app" style="display:none;">
+            <div class="topbar glass-card">
+                <div>👤 Usuario: <span id="logged-user"></span></div>
+                <button id="logout-btn">Cerrar sesión</button>
+            </div>
+
+            <div class="tabs client-tabs">
+                <button class="tab-btn active" onclick="showTab('reservar-tab',this)">📅 Reservar</button>
+                <button class="tab-btn" onclick="showTab('citas-tab',this)">📋 Mis citas</button>
+            </div>
+
+            <div id="reservar-tab" class="tab-content active-tab">
+                <div class="glass-card">
+                    <h2>Reservar cita</h2>
+                    <form id="booking-form">
+                        <label>Nombre completo</label>
+                        <input type="text" id="cliente" placeholder="Escribe tu nombre" required>
+
+                        <label>Teléfono</label>
+                        <input type="text" id="telefono" placeholder="Número de teléfono" required>
+
+                        <label>Servicio</label>
+                        <select id="servicio"></select>
+
+                        <label>Fecha</label>
+                        <input type="date" id="fecha" required>
+
+                        <label>Horario</label>
+                        <select id="horario"></select>
+
+                        <label>Método de pago</label>
+                        <select id="metodo-pago">
+                            <option>Transfermovil</option>
+                            <option>Enzona</option>
+                            <option>Efectivo</option>
+                        </select>
+
+                        <div id="payment-info" class="payment-box"></div>
+                        <div id="adelanto-box" class="payment-box">Adelanto requerido: 0 CUP</div>
+                        <button type="submit">Agendar cita</button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="citas-tab" class="tab-content">
+                <div class="glass-card">
+                    <h2>Mis citas</h2>
+                    <div id="appointments-container"></div>
+                </div>
+            </div>
+
+            <div id="admin-panel" style="display:none;">
+                <div class="tabs admin-tabs">
+                    <button class="tab-btn active" onclick="showAdminTab('solicitudes-tab',this)">📋 Solicitudes</button>
+                    <button class="tab-btn" onclick="showAdminTab('config-tab',this)">⚙️ Configuración</button>
+                    <button class="tab-btn" onclick="showAdminTab('exportar-tab',this)">📄 Exportar</button>
+                </div>
+
+                <div id="solicitudes-tab" class="admin-content active-admin">
+                    <div class="glass-card">
+                        <h2>Panel Administrador</h2>
+                        <div class="filters">
+                            <button onclick="filterAppointments('Todas')">Todas</button>
+                            <button onclick="filterAppointments('Procesando')">Procesando</button>
+                            <button onclick="filterAppointments('Confirmada')">Confirmadas</button>
+                            <button onclick="filterAppointments('Cancelada')">Canceladas</button>
+                        </div>
+                        <div id="admin-citas"></div>
+                    </div>
+                </div>
+
+                <div id="config-tab" class="admin-content">
+                    <div class="glass-card">
+                        <h2>Configuración</h2>
+                        <label>Horarios</label>
+                        <textarea id="admin-horarios" rows="5"></textarea>
+
+                        <label>Servicios</label>
+                        <textarea id="admin-servicios" rows="5"></textarea>
+
+                        <label>Días Bloqueados (Uno por línea: AAAA-MM-DD)</label>
+                        <textarea id="admin-bloqueos" rows="4" placeholder="Ejemplo: 2026-06-15"></textarea>
+
+                        <label>Tarjeta Transfermovil</label>
+                        <input type="text" id="transfermovil">
+
+                        <label>Teléfono Transfermovil</label>
+                        <input type="text" id="telefono-transfermovil">
+
+                        <label>Tarjeta Enzona</label>
+                        <input type="text" id="enzona">
+
+                        <label>Teléfono Enzona</label>
+                        <input type="text" id="telefono-enzona">
+
+                        <label>Porcentaje adelanto (%)</label>
+                        <input type="number" id="porcentaje-adelanto">
+
+                        <label>Saldo móvil</label>
+                        <input type="text" id="saldo-movil">
+
+                        <button onclick="saveConfig()">Guardar configuración</button>
+                    </div>
+                </div>
+
+                <div id="exportar-tab" class="admin-content">
+                    <div class="glass-card">
+                        <h2>Exportar citas</h2>
+                        <label>Fecha inicio</label>
+                        <input type="date" id="fecha-inicio">
+                        <label>Fecha final</label>
+                        <input type="date" id="fecha-fin">
+                        <button onclick="exportAppointmentsPDF()">Exportar PDF</button>
+                        <button onclick="exportAppointmentsExcel()">Exportar Excel</button>
+                        <button onclick="clearAppointments()">Limpiar citas</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <script src="app.js"></script>
 </body>
 </html>
